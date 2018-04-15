@@ -6,6 +6,7 @@ import (
     "net"
     // "runtime"
     "github.com/vishvananda/netns"
+    "github.com/redhat-nfvpe/koko"
 )
 
 func main() {
