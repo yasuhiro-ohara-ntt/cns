@@ -4,23 +4,20 @@ package main
 import (
     "fmt"
     "net"
-    // "runtime"
     "github.com/vishvananda/netns"
-    "github.com/redhat-nfvpe/koko"
 )
 
 func main() {
-    // runtime.LockOSThread()
-    // defer runtime.UnlockOSThread()
-
     origns, _ := netns.Get()
     defer origns.Close()
 
-    newns, _ := netns.New()
-    netns.Set(newns)
-    defer newns.Close()
+    slank, _ := netns.GetFromName("slank")
+    fmt.Printf("netn: %v \n", slank);
+    defer slank.Close()
 
     ifaces, _ := net.Interfaces()
-    fmt.Printf("Interfaces: %v\n", ifaces)
-    netns.Set(origns)
+    fmt.Printf("# Interfaces: %v\n", len(ifaces))
+    for i:=0; i<len(ifaces); i++ {
+      fmt.Printf("Interface[%d]: %v\n", i, ifaces[i])
+    }
 }
