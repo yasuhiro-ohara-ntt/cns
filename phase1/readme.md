@@ -8,20 +8,26 @@
 - quaggaという名前のLXDベースイメージを作成
 - setup.shを実行
 - test1.shを実行
+	- test1.sh: 全リンクのそれぞれの到達性を確認
 - 妥協: r2,r3,r5に入って地道にquaggaをコンフィグ
 	- 目標: r0-r6に入って地道にquaggaをコンフィグ
-- test2.shを実行
-- test3.shを実行
+- client/server間でping
 
 ## 撤収手順
 
 - shutdown.shを実行
 
-## 各シェルスクリプトの説明
+## Quaggaのコンフィグ例
 
-- test1.sh: 全リンクのそれぞれの到達性を確認
-- test2.sh: BGPのリーチャビリティーの確認
-- test3.sh: client to serverのリーチャビリティーの確認
+```
+$ cat /etc/quagga/bgpd.conf
+...
+router bgp 100
+ bgp router-id 3.3.3.3
+ neighbor 10.9.0.1 remote-as 500
+ neighbor 10.4.0.2 remote-as 200
+...
+```
 
 ## References
 
