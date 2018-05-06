@@ -5,13 +5,16 @@ if [ `whoami` != 'root' ]; then
 	exit 1
 fi
 
-lxc launch ubuntu:16.04 c0
-lxc launch ubuntu:16.04 c1
-lxc launch ubuntu:16.04 c2
-lxc launch ubuntu:16.04 c3
-lxc launch ubuntu:16.04 c4
-lxc launch ubuntu:16.04 c5
-lxc launch ubuntu:16.04 c6
+mkdir -p /var/run/netns
+
+image=quagga #image=ubuntu:16.04
+lxc launch $image c0
+lxc launch $image c1
+lxc launch $image c2
+lxc launch $image c3
+lxc launch $image c4
+lxc launch $image c5
+lxc launch $image c6
 
 bin/lxc_attach_netns.sh c0 c0
 bin/lxc_attach_netns.sh c1 c1
@@ -21,7 +24,7 @@ bin/lxc_attach_netns.sh c4 c4
 bin/lxc_attach_netns.sh c5 c5
 bin/lxc_attach_netns.sh c6 c6
 
-GOPATH=/home/slank/go
+GOPATH=$HOME/go
 $GOPATH/bin/koko -n c5,ifc6,10.1.0.1/24  -n c6,ifc5,10.1.0.2/24  # 10.1.0.0/24
 $GOPATH/bin/koko -n c3,ifc4,10.2.0.1/24  -n c4,ifc3,10.2.0.2/24  # 10.2.0.0/24
 $GOPATH/bin/koko -n c4,ifc6,10.3.0.1/24  -n c6,ifc4,10.3.0.2/24  # 10.3.0.0/24
