@@ -5,8 +5,6 @@
 
 ## 構築手順
 
-![](./topo.png)
-
 - quaggaという名前のLXDベースイメージを作成
 - setup.shを実行
 - test1.shを実行
@@ -29,5 +27,9 @@
 
 - https://github.com/vishvananda/netns
 - https://github.com/redhat-nfvpe/koko
+- http://wiki.slankdev.net/misc/lxd
 
+構築する仮想NWのtopo図
+
+![](./topo.png)
 
