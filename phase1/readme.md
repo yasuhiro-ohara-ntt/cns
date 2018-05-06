@@ -5,12 +5,14 @@
 
 ## 構築手順
 
+![](./topo.png)
+
 - quaggaという名前のLXDベースイメージを作成
 - setup.shを実行
 - test1.shを実行
-- r0-r6に入って地道にquaggaをコンフィグ
+- 妥協: r1,r3,r5に入って地道にquaggaをコンフィグ
+	- 目標: r0-r6に入って地道にquaggaをコンフィグ
 - test2.shを実行
-- client,serverに入ってdefault-routeを設定
 - test3.shを実行
 
 ## 撤収手順
