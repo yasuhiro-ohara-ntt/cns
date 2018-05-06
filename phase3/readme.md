@@ -1,32 +1,31 @@
 
 # Practice of BGP and OSPF
 
-とある理由ネットワークのお勉強
+とある理由のネットワークのお勉強
 
 ## 構築手順
 
 - quaggaという名前のLXDベースイメージを作成
 - setup.shを実行
-- 確認1を実行
-- 各コンテナに入って地道にquaggaをコンフィグ
-- 確認2を実行
-
-## 確認1: オペレータテスト: IP neighbor reachability
-
-以下を実行. 全てのリンクの到達性を確認する.
-
-```
-host$ lxc exec c0
-```
-
-## 確認2: オペレータテスト: BGP reachability
-
-## 確認3: クライアントテスト
-
-現状はなし
+- test1.shを実行
+- r0-r6に入って地道にquaggaをコンフィグ
+- test2.shを実行
+- client,serverに入ってdefault-routeを設定
+- test3.shを実行
 
 ## 撤収手順
 
 - shutdown.shを実行
+
+## 各シェルスクリプトの説明
+
+- test1.sh: 全リンクのそれぞれの到達性を確認
+- test2.sh: BGPのリーチャビリティーの確認
+- test3.sh: client to serverのリーチャビリティーの確認
+
+## References
+
+- https://github.com/vishvananda/netns
+- https://github.com/redhat-nfvpe/koko
 
 

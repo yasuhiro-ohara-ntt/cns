@@ -8,39 +8,47 @@ fi
 mkdir -p /var/run/netns
 
 image=quagga #image=ubuntu:16.04
-lxc launch $image c0
-lxc launch $image c1
-lxc launch $image c2
-lxc launch $image c3
-lxc launch $image c4
-lxc launch $image c5
-lxc launch $image c6
+lxc launch $image r0
+lxc launch $image r1
+lxc launch $image r2
+lxc launch $image r3
+lxc launch $image r4
+lxc launch $image r5
+lxc launch $image r6
+lxc launch $image client
+lxc launch $image server
 
-bin/lxc_attach_netns.sh c0 c0
-bin/lxc_attach_netns.sh c1 c1
-bin/lxc_attach_netns.sh c2 c2
-bin/lxc_attach_netns.sh c3 c3
-bin/lxc_attach_netns.sh c4 c4
-bin/lxc_attach_netns.sh c5 c5
-bin/lxc_attach_netns.sh c6 c6
+bin/lxc_attach_netns.sh r0 r0
+bin/lxc_attach_netns.sh r1 r1
+bin/lxc_attach_netns.sh r2 r2
+bin/lxc_attach_netns.sh r3 r3
+bin/lxc_attach_netns.sh r4 r4
+bin/lxc_attach_netns.sh r5 r5
+bin/lxc_attach_netns.sh r6 r6
+bin/lxc_attach_netns.sh client client
+bin/lxc_attach_netns.sh server server
 
 GOPATH=$HOME/go
-$GOPATH/bin/koko -n c5,ifc6,10.1.0.1/24  -n c6,ifc5,10.1.0.2/24  # 10.1.0.0/24
-$GOPATH/bin/koko -n c3,ifc4,10.2.0.1/24  -n c4,ifc3,10.2.0.2/24  # 10.2.0.0/24
-$GOPATH/bin/koko -n c4,ifc6,10.3.0.1/24  -n c6,ifc4,10.3.0.2/24  # 10.3.0.0/24
-$GOPATH/bin/koko -n c3,ifc5,10.4.0.1/24  -n c5,ifc3,10.4.0.2/24  # 10.4.0.0/24
-$GOPATH/bin/koko -n c2,ifc4,10.5.0.1/24  -n c4,ifc2,10.5.0.2/24  # 10.5.0.0/24
-$GOPATH/bin/koko -n c0,ifc3,10.6.0.1/24  -n c3,ifc0,10.6.0.2/24  # 10.6.0.0/24
-$GOPATH/bin/koko -n c1,ifc3,10.7.0.1/24  -n c3,ifc1,10.7.0.2/24  # 10.7.0.0/24
-$GOPATH/bin/koko -n c0,ifc4,10.8.0.1/24  -n c4,ifc0,10.8.0.2/24  # 10.8.0.0/24
-$GOPATH/bin/koko -n c2,ifc3,10.9.0.1/24  -n c3,ifc2,10.9.0.2/24  # 10.9.0.0/24
-$GOPATH/bin/koko -n c1,ifc4,10.10.0.1/24 -n c4,ifc1,10.10.0.2/24 # 10.10.0.0/24
+$GOPATH/bin/koko -n r5,ifr6,10.1.0.1/24  -n r6,ifr5,10.1.0.2/24  # 10.1.0.0/24
+$GOPATH/bin/koko -n r3,ifr4,10.2.0.1/24  -n r4,ifr3,10.2.0.2/24  # 10.2.0.0/24
+$GOPATH/bin/koko -n r4,ifr6,10.3.0.1/24  -n r6,ifr4,10.3.0.2/24  # 10.3.0.0/24
+$GOPATH/bin/koko -n r3,ifr5,10.4.0.1/24  -n r5,ifr3,10.4.0.2/24  # 10.4.0.0/24
+$GOPATH/bin/koko -n r2,ifr4,10.5.0.1/24  -n r4,ifr2,10.5.0.2/24  # 10.5.0.0/24
+$GOPATH/bin/koko -n r0,ifr3,10.6.0.1/24  -n r3,ifr0,10.6.0.2/24  # 10.6.0.0/24
+$GOPATH/bin/koko -n r1,ifr3,10.7.0.1/24  -n r3,ifr1,10.7.0.2/24  # 10.7.0.0/24
+$GOPATH/bin/koko -n r0,ifr4,10.8.0.1/24  -n r4,ifr0,10.8.0.2/24  # 10.8.0.0/24
+$GOPATH/bin/koko -n r2,ifr3,10.9.0.1/24  -n r3,ifr2,10.9.0.2/24  # 10.9.0.0/24
+$GOPATH/bin/koko -n r1,ifr4,10.10.0.1/24 -n r4,ifr1,10.10.0.2/24 # 10.10.0.0/24
+$GOPATH/bin/koko -n r5,client,192.168.100.1/24 -n client,r5,192.168.100.2/24 # client
+$GOPATH/bin/koko -n server,r2,192.168.200.1/24 -n r2,server,192.168.200.2/24 # server
 
-ip netns delete c0
-ip netns delete c1
-ip netns delete c2
-ip netns delete c3
-ip netns delete c4
-ip netns delete c5
-ip netns delete c6
+ip netns delete r0
+ip netns delete r1
+ip netns delete r2
+ip netns delete r3
+ip netns delete r4
+ip netns delete r5
+ip netns delete r6
+ip netns delete client
+ip netns delete server
 
