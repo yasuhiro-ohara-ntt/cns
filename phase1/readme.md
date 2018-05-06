@@ -8,7 +8,7 @@
 - quaggaという名前のLXDベースイメージを作成
 - setup.shを実行
 - test1.shを実行
-- 妥協: r1,r3,r5に入って地道にquaggaをコンフィグ
+- 妥協: r2,r3,r5に入って地道にquaggaをコンフィグ
 	- 目標: r0-r6に入って地道にquaggaをコンフィグ
 - test2.shを実行
 - test3.shを実行
@@ -28,6 +28,7 @@
 - https://github.com/vishvananda/netns
 - https://github.com/redhat-nfvpe/koko
 - http://wiki.slankdev.net/misc/lxd
+- http://wiki.slankdev.net/misc/quagga
 
 構築する仮想NWのtopo図
 
