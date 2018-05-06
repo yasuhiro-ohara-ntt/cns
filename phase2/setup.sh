@@ -48,8 +48,8 @@ $GOPATH/bin/koko -n r1,ifr4,10.10.0.1/24 -n r4,ifr1,10.10.0.2/24 # 10.10.0.0/24
 $GOPATH/bin/koko -n r7,ifr0,192.168.120.1/24 -n r0,ifr7,192.168.120.2/24 # 192.168.120.0/24
 $GOPATH/bin/koko -n r8,ifr1,192.168.130.1/24 -n r1,ifr8,192.168.130.2/24 # 192.168.130.0/24
 $GOPATH/bin/koko -n r9,ifr2,192.168.140.1/24 -n r2,ifr9,192.168.140.2/24 # 192.168.140.0/24
-$GOPATH/bin/koko -n r5,client,192.168.10.1/24 -n client,r5,192.168.10.2/24 # client
-$GOPATH/bin/koko -n server,r9,192.168.20.1/24 -n r9,server,192.168.20.2/24 # server
+$GOPATH/bin/koko -n r5,ifclient,192.168.10.1/24 -n client,ifr5,192.168.10.2/24 # client
+$GOPATH/bin/koko -n server,ifr9,192.168.20.1/24 -n r9,ifserver,192.168.20.2/24 # server
 
 lxc exec r0     -- ip r del default
 lxc exec r1     -- ip r del default
@@ -61,11 +61,12 @@ lxc exec r6     -- ip r del default
 lxc exec r7     -- ip r del default
 lxc exec r8     -- ip r del default
 lxc exec r9     -- ip r del default
-echo slankdev 1341341
 lxc exec client -- ip r del default
-echo slankdev 919938
-lxc exec server -- ip r del default ## koko okashii
-echo slankdev 02341
+echo debug slankdev 919938
+# XXX: always errored
+# RTNETLINK answers: No such process
+lxc exec server -- ip r del default
+echo debug slankdev 023941
 
 lxc exec client -- ip r add default via 192.168.10.1
 lxc exec server -- ip r add default via 192.168.20.2

@@ -61,8 +61,11 @@ lxc exec r9 -- ping -c $pingcnt 192.168.140.2 > /dev/null
 lxc exec r9 -- ping -c $pingcnt 192.168.20.1  > /dev/null
 echo 'done'
 
-echo -n 'check client/server...'
+echo -n 'check client...'
 lxc exec client -- ping -c $pingcnt 192.168.10.1  > /dev/null
+echo 'done'
+
+echo -n 'check server...'
 lxc exec server -- ping -c $pingcnt 192.168.20.2  > /dev/null
 echo 'done'
 
