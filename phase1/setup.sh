@@ -18,6 +18,18 @@ lxc launch $image r6
 lxc launch $image client
 lxc launch $image server
 
+lxc exec r0     -- ip r del default
+lxc exec r1     -- ip r del default
+lxc exec r2     -- ip r del default
+lxc exec r3     -- ip r del default
+lxc exec r4     -- ip r del default
+lxc exec r5     -- ip r del default
+lxc exec r6     -- ip r del default
+lxc exec client -- ip r del default
+lxc exec client -- ip r add default via 192.168.100.1
+lxc exec server -- ip r del default
+lxc exec server -- ip r add default via 192.168.200.2
+
 bin/lxc_attach_netns.sh r0 r0
 bin/lxc_attach_netns.sh r1 r1
 bin/lxc_attach_netns.sh r2 r2
