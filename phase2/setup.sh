@@ -61,8 +61,11 @@ lxc exec r6     -- ip r del default
 lxc exec r7     -- ip r del default
 lxc exec r8     -- ip r del default
 lxc exec r9     -- ip r del default
+echo slankdev 1341341
 lxc exec client -- ip r del default
-lxc exec server -- ip r del default
+echo slankdev 919938
+lxc exec server -- ip r del default ## koko okashii
+echo slankdev 02341
 
 lxc exec client -- ip r add default via 192.168.10.1
 lxc exec server -- ip r add default via 192.168.20.2
