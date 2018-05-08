@@ -7,7 +7,7 @@ fi
 
 mkdir -p /var/run/netns
 
-image=quagga #image=ubuntu:16.04
+image=router
 lxc launch $image r0
 lxc launch $image r1
 lxc launch $image r2
@@ -26,9 +26,7 @@ lxc exec r4     -- ip r del default
 lxc exec r5     -- ip r del default
 lxc exec r6     -- ip r del default
 lxc exec client -- ip r del default
-lxc exec client -- ip r add default via 192.168.100.1
 lxc exec server -- ip r del default
-lxc exec server -- ip r add default via 192.168.200.2
 
 bin/lxc_attach_netns.sh r0 r0
 bin/lxc_attach_netns.sh r1 r1
@@ -53,6 +51,9 @@ $GOPATH/bin/koko -n r2,ifr3,10.9.0.1/24  -n r3,ifr2,10.9.0.2/24  # 10.9.0.0/24
 $GOPATH/bin/koko -n r1,ifr4,10.10.0.1/24 -n r4,ifr1,10.10.0.2/24 # 10.10.0.0/24
 $GOPATH/bin/koko -n r5,client,192.168.100.1/24 -n client,r5,192.168.100.2/24 # client
 $GOPATH/bin/koko -n server,r2,192.168.200.1/24 -n r2,server,192.168.200.2/24 # server
+
+lxc exec client -- ip r add default via 192.168.100.1
+lxc exec server -- ip r add default via 192.168.200.2
 
 ip netns delete r0
 ip netns delete r1
