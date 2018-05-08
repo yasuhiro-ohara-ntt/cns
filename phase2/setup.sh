@@ -7,7 +7,7 @@ fi
 
 mkdir -p /var/run/netns
 
-image=quagga
+image=router
 lxc launch $image r0
 lxc launch $image r1
 lxc launch $image r2
