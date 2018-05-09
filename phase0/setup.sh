@@ -7,14 +7,6 @@ fi
 
 mkdir -p /var/run/netns
 
-image=router
-lxc launch $image r0
-lxc launch $image r1
-lxc launch $image r2
-lxc launch $image u0
-lxc launch $image u1
-lxc launch $image u2
-
 lxc exec r0 -- ip r del default
 lxc exec r1 -- ip r del default
 lxc exec r2 -- ip r del default
