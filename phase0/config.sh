@@ -18,6 +18,7 @@ password zebra
 log stdout
 router bgp 200
   bgp router-id 1.1.1.1
+  network 192.168.30.0/24
   neighbor 10.3.0.1 remote-as 100
   neighbor 10.1.0.1 remote-as 200
 EOF
