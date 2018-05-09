@@ -8,8 +8,8 @@ password zebra
 log stdout
 router bgp 100
   bgp router-id 0.0.0.0
-  network 192.168.20.0/24
-  neighbor 10.3.0.2 remote-as 200
+  network 192.168.10.0/24
+  neighbor 10.1.0.2 remote-as 200
 EOF
 
 cat << EOF > /tmp/r1.bgpd.conf
@@ -18,9 +18,10 @@ password zebra
 log stdout
 router bgp 200
   bgp router-id 1.1.1.1
-  network 192.168.30.0/24
-  neighbor 10.3.0.1 remote-as 100
-  neighbor 10.1.0.1 remote-as 200
+  network 192.168.20.0/24
+  neighbor 10.1.0.1 remote-as 100
+  neighbor 10.2.0.2 remote-as 200
+	neighbor 10.2.0.2 next-hop-self
 EOF
 
 cat << EOF > /tmp/r2.bgpd.conf
@@ -29,8 +30,8 @@ password zebra
 log stdout
 router bgp 200
   bgp router-id 2.2.2.2
-  network 192.168.10.0/24
-  neighbor 10.1.0.2 remote-as 200
+  network 192.168.30.0/24
+  neighbor 10.2.0.1 remote-as 200
 EOF
 
 lxc file push /tmp/r0.bgpd.conf r0/etc/quagga/bgpd.conf
