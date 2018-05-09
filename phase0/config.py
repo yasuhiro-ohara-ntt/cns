@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 import subprocess
 
+def push_textfile_to_container(text, cont_path):
+    dum = '/tmp/slankdev_test_dummy_file'
+    f = open(dum, 'w')
+    f.write(text)
+    f.close()
+    cmd = 'lxc file push {} {}'.format(dum, cont_path)
+    subprocess.Popen(cmd.split()).wait()
+
+def exec_cmd_foreach_containers(containers, cmd):
+    for c in containers:
+        print('exec on {}: {}'.format(c, cmd))
+        cmd_str = 'lxc exec {} -- {}'.format(c, cmd)
+        subprocess.Popen(cmd_str.split()).wait()
+
 r0_bgpd_conf='''
 hostname r0
 password zebra
@@ -33,28 +47,7 @@ router bgp 200
   neighbor 10.2.0.1 remote-as 200
 '''
 
-f = open('/tmp/r0.bgp.conf', 'w')
-f.write(r0_bgpd_conf)
-f.close()
-f = open('/tmp/r1.bgp.conf', 'w')
-f.write(r1_bgpd_conf)
-f.close()
-f = open('/tmp/r2.bgp.conf', 'w')
-f.write(r2_bgpd_conf)
-f.close()
-
-subprocess.Popen('lxc file push /tmp/r0.bgpd.conf r0/etc/quagga/bgpd.conf'.split()).wait()
-subprocess.Popen('lxc file push /tmp/r1.bgpd.conf r1/etc/quagga/bgpd.conf'.split()).wait()
-subprocess.Popen('lxc file push /tmp/r2.bgpd.conf r2/etc/quagga/bgpd.conf'.split()).wait()
-
-print('restart quagga on r0...', end='', flush=True)
-subprocess.Popen('lxc exec r0 -- systemctl restart quagga'.split()).wait()
-print('done')
-
-print('restart quagga on r1...', end='', flush=True)
-subprocess.Popen('lxc exec r1 -- systemctl restart quagga'.split()).wait()
-print('done')
-
-print('restart quagga on r2...', end='', flush=True)
-subprocess.Popen('lxc exec r2 -- systemctl restart quagga'.split()).wait()
-print('done')
+push_textfile_to_container(r0_bgpd_conf, 'r0/etc/quagga/bgpd.conf')
+push_textfile_to_container(r1_bgpd_conf, 'r1/etc/quagga/bgpd.conf')
+push_textfile_to_container(r2_bgpd_conf, 'r2/etc/quagga/bgpd.conf')
+exec_cmd_foreach_containers(['r0', 'r1', 'r2'], 'systemctl restart quagga')
