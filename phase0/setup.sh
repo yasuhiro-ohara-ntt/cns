@@ -22,12 +22,15 @@ bin/lxc_attach_netns.sh u1 u1
 bin/lxc_attach_netns.sh u2 u2
 
 GOPATH=$HOME/go
-$GOPATH/bin/koko -n r0,r1,10.1.0.1/24 -n r1,r0,10.1.0.2/24
-$GOPATH/bin/koko -n r1,r2,10.2.0.1/24 -n r2,r1,10.2.0.2/24
-$GOPATH/bin/koko -n u0,r0,192.168.10.1/24 -n r0,u0,192.168.10.2/24
-$GOPATH/bin/koko -n r1,u1,192.168.20.1/24 -n u1,r1,192.168.20.2/24
-$GOPATH/bin/koko -n r2,u2,192.168.30.1/24 -n u2,r2,192.168.30.2/24
+$GOPATH/bin/koko -n r0,r1 -n r1,r0
+$GOPATH/bin/koko -n r1,r2 -n r2,r1
+$GOPATH/bin/koko -n r0,u0 -n u0,r0
+$GOPATH/bin/koko -n r1,u1 -n u1,r1
+$GOPATH/bin/koko -n r2,u2 -n u2,r2
 
+lxc exec u0 -- ip addr add 192.168.10.1/24 dev r0
+lxc exec u1 -- ip addr add 192.168.20.2/24 dev r1
+lxc exec u2 -- ip addr add 192.168.30.2/24 dev r2
 lxc exec u0 -- ip r add default via 192.168.10.2
 lxc exec u1 -- ip r add default via 192.168.20.1
 lxc exec u2 -- ip r add default via 192.168.30.1
