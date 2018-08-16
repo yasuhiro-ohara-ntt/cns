@@ -38,21 +38,25 @@ sudo $koko -d R1,net1,10.2.0.1/24 -d R3,net0,10.2.0.2/24
 sudo $koko -d R2,net1,10.3.0.1/24 -d C0,net0,10.3.0.2/24
 sudo $koko -d R3,net1,10.4.0.1/24 -d C1,net0,10.4.0.2/24
 
-docker exec R0 ip link add link net1 name net1.2 type vlan id 2
-docker exec R0 ip link set net1.2 up
-docker exec R0 ip addr add 10.1.2.1/24 dev net1.2
+docker exec R0 bash -c "\
+	ip link add link net1 name net1.2 type vlan id 2 && \
+	ip link set net1.2 up && \
+	ip addr add 10.1.2.1/24 dev net1.2"
 
-docker exec R1 ip link add link net1 name net1.4 type vlan id 4
-docker exec R1 ip link set net1.4 up
-docker exec R1 ip addr add 10.2.4.1/24 dev net1.4
+docker exec R1 bash -c "\
+	ip link add link net1 name net1.4 type vlan id 4 && \
+	ip link set net1.4 up && \
+	ip addr add 10.2.4.1/24 dev net1.4"
 
-docker exec R2 ip link add link net0 name net0.2 type vlan id 2
-docker exec R2 ip link set net0.2 up
-docker exec R2 ip addr add 10.1.2.2/24 dev net0.2
+docker exec R2 bash -c "\
+	ip link add link net0 name net0.2 type vlan id 2 && \
+	ip link set net0.2 up && \
+	ip addr add 10.1.2.2/24 dev net0.2"
 
-docker exec R3 ip link add link net0 name net0.4 type vlan id 4
-docker exec R3 ip link set net0.4 up
-docker exec R3 ip addr add 10.2.4.2/24 dev net0.4
+docker exec R3 bash -c "\
+	ip link add link net0 name net0.4 type vlan id 4 && \
+	ip link set net0.4 up && \
+	ip addr add 10.2.4.2/24 dev net0.4"
 
 docker exec R0 \
 	vtysh -c "conf t" \
@@ -86,9 +90,12 @@ docker exec R3 \
 	-c "neighbor 10.2.0.1 remote-as 200" \
 	-c "network 10.4.0.0/24"
 
-docker exec C0 ip route del default
-docker exec C0 ip route add default via 10.3.0.1
-docker exec C1 ip route del default
-docker exec C1 ip route add default via 10.4.0.1
+docker exec C0 bash -c "\
+	ip route del default && \
+	ip route add default via 10.3.0.1"
+
+docker exec C1 bash -c "\
+	ip route del default && \
+	ip route add default via 10.4.0.1"
 
 
