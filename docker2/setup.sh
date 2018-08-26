@@ -4,6 +4,8 @@
 # Interface Addressing Rule: <nw-id>.<wire-id>.<vlan-id>.<link-id>/24
 # Loopback Addressing Rule : 255.0.0.<host-id>/32
 #
+# Description: BGP network using FRR
+#
 #                          vlan0:10.0.0.0/24
 #                     .1(net0)          .2(net0)
 #                R0(AS100)------------------R1(AS200)

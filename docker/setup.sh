@@ -2,6 +2,8 @@
 # Interface Addressing Rule: <nw-id>.<wire-id>.<vlan-id>.<link-id>/24
 # Loopback Addressing Rule : 255.0.0.<host-id>/32
 #
+# Description: BGP network using FRR
+#
 #                   10.1.0.0/24(native)
 #                   10.1.3.0/24(vlan3)
 #                   10.1.5.0/24(vlan5)
