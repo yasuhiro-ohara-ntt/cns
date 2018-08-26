@@ -4,7 +4,7 @@
 # Interface Addressing Rule: <nw-id>.<wire-id>.<vlan-id>.<link-id>/24
 # Loopback Addressing Rule : 255.0.0.<host-id>/32
 #
-# Description: SFC network using GoBGP/GoPlane
+# Description: BGP network using GoBGP/quagga
 #
 #                   C0
 #            (net0).2|
@@ -55,11 +55,11 @@ docker exec C1 bash -c "\
 docker cp R0_gobgpd.conf R0:/root/gobgpd.conf
 docker exec -d R0 /etc/init.d/quagga start
 docker exec -d R0 /usr/local/bin/gobgpd -f /root/gobgpd.conf
-docker exec -d R0 gobgp global rib add 10.1.0.0/24
+docker exec    R0 gobgp global rib add 10.1.0.0/24
 
 docker cp R1_gobgpd.conf R1:/root/gobgpd.conf
 docker exec -d R1 /etc/init.d/quagga start
 docker exec -d R1 /usr/local/bin/gobgpd -f /root/gobgpd.conf
-docker exec -d R1 gobgp global rib add 10.3.0.0/24
+docker exec    R1 gobgp global rib add 10.3.0.0/24
 
 
