@@ -2,6 +2,12 @@
 #
 # Description: BGP/OSPF network using FRR
 #
+#                   S0                          S1
+#            (net0).2|                          |.2(net0)
+#                    |                          |
+#  vlan0:20.1.0.0/24 |                          | vlan0:20.2.0.0/24
+#                    |                          |
+#            (net1).1|                          |.1(net1)
 #                R4(AS200)                  R5(AS300)
 #            (net0).1|                          |.1(net0)
 #                    |                          |
@@ -36,6 +42,8 @@ docker run -td --rm --privileged --name R4 -h R4 $router_img
 docker run -td --rm --privileged --name R5 -h R5 $router_img
 docker run -td --rm --privileged --name C0 -h C0 $client_img
 docker run -td --rm --privileged --name C1 -h C1 $client_img
+docker run -td --rm --privileged --name S0 -h S0 $client_img
+docker run -td --rm --privileged --name S1 -h S1 $client_img
 
 koko=$GOPATH/bin/koko
 sudo $koko -d R0,net2,10.1.0.1/24 -d R2,net0,10.1.0.2/24
@@ -46,6 +54,8 @@ sudo $koko -d R2,net2,10.5.0.1/24 -d R3,net2,10.5.0.2/24
 sudo $koko -d R0,net0,10.6.0.1/24 -d R1,net0,10.6.0.2/24
 sudo $koko -d R4,net0,10.7.0.1/24 -d R0,net1,10.7.0.2/24
 sudo $koko -d R5,net0,10.8.0.1/24 -d R1,net1,10.8.0.2/24
+sudo $koko -d R4,net1,20.1.0.1/24 -d S0,net0,20.1.0.2/24
+sudo $koko -d R5,net1,20.2.0.1/24 -d S1,net0,20.2.0.2/24
 
 docker exec C0 bash -c "\
   ip route del default && \
@@ -54,6 +64,14 @@ docker exec C0 bash -c "\
 docker exec C1 bash -c "\
   ip route del default && \
   ip route add default via 10.4.0.1"
+
+docker exec S0 bash -c "\
+  ip route del default && \
+  ip route add default via 20.1.0.1"
+
+docker exec S1 bash -c "\
+  ip route del default && \
+  ip route add default via 20.2.0.1"
 
 
 
@@ -142,6 +160,7 @@ docker exec R4 \
    -c "router bgp 200" \
    -c "bgp router-id 2.2.2.2" \
    -c "neighbor 10.7.0.2 remote-as 100" \
+   -c "network 20.1.0.0/24"            \
    -c "exit"
 
 docker exec R5 \
@@ -149,5 +168,6 @@ docker exec R5 \
    -c "router bgp 300" \
    -c "bgp router-id 3.3.3.3" \
    -c "neighbor 10.8.0.2 remote-as 100" \
+   -c "network 20.2.0.0/24"            \
    -c "exit"
 
