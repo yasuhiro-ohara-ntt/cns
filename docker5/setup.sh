@@ -53,36 +53,28 @@ docker exec C1 bash -c "\
 ### Router Config Start ###
 ###########################
 
-# docker exec R0 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 100" \
-# 	-c "bgp router-id 1.1.1.1" \
-# 	-c "neighbor 10.0.0.2 remote-as 200" \
-# 	-c "neighbor 10.1.0.2 remote-as 300" \
-# 	-c "network 10.1.0.0/24" \
-# 	-c "network 10.1.2.0/24"
-#
-# docker exec R1 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 200" \
-# 	-c "bgp router-id 2.2.2.2" \
-# 	-c "neighbor 10.0.0.1 remote-as 100" \
-# 	-c "neighbor 10.2.0.2 remote-as 400" \
-# 	-c "network 10.2.0.0/24" \
-# 	-c "network 10.2.4.0/24"
-#
-# docker exec R2 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 300" \
-# 	-c "bgp router-id 3.3.3.3" \
-# 	-c "neighbor 10.1.0.1 remote-as 100" \
-# 	-c "network 10.3.0.0/24"
-#
-# docker exec R3 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 400" \
-# 	-c "bgp router-id 4.4.4.4" \
-# 	-c "neighbor 10.2.0.1 remote-as 200" \
-# 	-c "network 10.4.0.0/24"
+docker exec R0 \
+	vtysh -c "conf t" \
+	-c "router ospf" \
+	-c "network 10.0.0.0/24 area 0" \
+	-c "network 10.1.0.0/24 area 0"
+
+docker exec R1 \
+	vtysh -c "conf t" \
+	-c "router ospf" \
+	-c "network 10.0.0.0/24 area 0" \
+	-c "network 10.2.0.0/24 area 0"
+
+docker exec R2 \
+	vtysh -c "conf t" \
+	-c "router ospf" \
+	-c "network 10.1.0.0/24 area 0" \
+	-c "network 10.3.0.0/24 area 0"
+
+docker exec R3 \
+	vtysh -c "conf t" \
+	-c "router ospf" \
+	-c "network 10.2.0.0/24 area 0" \
+	-c "network 10.4.0.0/24 area 0"
 
 
