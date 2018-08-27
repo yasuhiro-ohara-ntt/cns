@@ -77,6 +77,7 @@ docker exec R0                                 \
     -c "neighbor 10.255.0.11 update-source lo" \
     -c "neighbor 10.255.0.12 remote-as 100"    \
     -c "neighbor 10.255.0.12 update-source lo" \
+    -c "neighbor 10.7.0.1 remote-as 200"       \
     -c "exit"
 
 docker exec R1 \
@@ -95,6 +96,7 @@ docker exec R1 \
     -c "neighbor 10.255.0.10 update-source lo" \
     -c "neighbor 10.255.0.13 remote-as 100"    \
     -c "neighbor 10.255.0.13 update-source lo" \
+    -c "neighbor 10.8.0.1 remote-as 300"       \
     -c "exit"
 
 docker exec R2                                 \
@@ -106,6 +108,7 @@ docker exec R2                                 \
     -c "network 10.255.0.12/32 area 0"         \
     -c "network 10.1.0.0/24 area 0"            \
     -c "network 10.5.0.0/24 area 0"            \
+    -c "network 10.3.0.0/24 area 0"            \
     -c "exit"                                  \
   -c "router bgp 100"                          \
     -c "bgp router-id 10.255.0.12"             \
@@ -124,6 +127,7 @@ docker exec R3                                 \
     -c "network 10.255.0.13/32 area 0"         \
     -c "network 10.2.0.0/24 area 0"            \
     -c "network 10.5.0.0/24 area 0"            \
+    -c "network 10.4.0.0/24 area 0"            \
     -c "exit"                                  \
   -c "router bgp 100"                          \
     -c "bgp router-id 10.255.0.13"             \
@@ -133,18 +137,17 @@ docker exec R3                                 \
     -c "neighbor 10.255.0.12 update-source lo" \
     -c "exit"
 
+docker exec R4 \
+   vtysh -c "conf t" \
+   -c "router bgp 200" \
+   -c "bgp router-id 2.2.2.2" \
+   -c "neighbor 10.7.0.2 remote-as 100" \
+   -c "exit"
 
-# docker exec R4 \
-#    vtysh -c "conf t" \
-#    -c "router bgp 400" \
-#    -c "bgp router-id 4.4.4.4" \
-#    -c "neighbor 10.2.0.1 remote-as 200" \
-#    -c "network 10.4.0.0/24"
-
-# docker exec R5 \
-#    vtysh -c "conf t" \
-#    -c "router bgp 400" \
-#    -c "bgp router-id 4.4.4.4" \
-#    -c "neighbor 10.2.0.1 remote-as 200" \
-#    -c "network 10.4.0.0/24"
+docker exec R5 \
+   vtysh -c "conf t" \
+   -c "router bgp 300" \
+   -c "bgp router-id 3.3.3.3" \
+   -c "neighbor 10.8.0.2 remote-as 100" \
+   -c "exit"
 
