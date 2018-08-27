@@ -48,12 +48,12 @@ sudo $koko -d R4,net0,10.7.0.1/24 -d R0,net1,10.7.0.2/24
 sudo $koko -d R5,net0,10.8.0.1/24 -d R1,net1,10.8.0.2/24
 
 docker exec C0 bash -c "\
-	ip route del default && \
-	ip route add default via 10.3.0.1"
+  ip route del default && \
+  ip route add default via 10.3.0.1"
 
 docker exec C1 bash -c "\
-	ip route del default && \
-	ip route add default via 10.4.0.1"
+  ip route del default && \
+  ip route add default via 10.4.0.1"
 
 
 
@@ -61,72 +61,90 @@ docker exec C1 bash -c "\
 ### Router Config Start ###
 ###########################
 
-docker exec R0                              \
-	vtysh -c "conf t"                         \
-	-c "interface lo"                         \
-		-c "ip address 10.255.0.10/32"          \
-		-c "exit"                               \
-	-c "router ospf"                          \
-		-c "network 10.255.0.10/32 area 0"      \
-		-c "network 10.6.0.0/24 area 0"         \
-		-c "exit"                               \
-	-c "router bgp 100"                       \
-		-c "bgp router-id 10.255.0.10"          \
-		-c "neighbor 10.255.0.11 remote-as 100" \
-		-c "neighbor 10.255.0.11 update-source lo" \
-		-c "exit"
+docker exec R0                                 \
+  vtysh -c "conf t"                            \
+  -c "interface lo"                            \
+    -c "ip address 10.255.0.10/32"             \
+    -c "exit"                                  \
+  -c "router ospf"                             \
+    -c "network 10.255.0.10/32 area 0"         \
+    -c "network 10.6.0.0/24 area 0"            \
+    -c "network 10.1.0.0/24 area 0"            \
+    -c "exit"                                  \
+  -c "router bgp 100"                          \
+    -c "bgp router-id 10.255.0.10"             \
+    -c "neighbor 10.255.0.11 remote-as 100"    \
+    -c "neighbor 10.255.0.11 update-source lo" \
+    -c "neighbor 10.255.0.12 remote-as 100"    \
+    -c "neighbor 10.255.0.12 update-source lo" \
+    -c "exit"
 
 docker exec R1 \
-	vtysh -c "conf t" \
-	-c "interface lo"                         \
-		-c "ip address 10.255.0.11/32"          \
-		-c "exit"                               \
-	-c "router ospf"                          \
-		-c "network 10.255.0.11/32 area 0"      \
-		-c "network 10.6.0.0/24 area 0"         \
-		-c "exit"                               \
-	-c "router bgp 100"                       \
-		-c "bgp router-id 10.255.0.11"          \
-		-c "neighbor 10.255.0.10 remote-as 100" \
-		-c "neighbor 10.255.0.10 update-source lo" \
-		-c "exit"
+  vtysh -c "conf t" \
+  -c "interface lo"                            \
+    -c "ip address 10.255.0.11/32"             \
+    -c "exit"                                  \
+  -c "router ospf"                             \
+    -c "network 10.255.0.11/32 area 0"         \
+    -c "network 10.6.0.0/24 area 0"            \
+    -c "network 10.2.0.0/24 area 0"            \
+    -c "exit"                                  \
+  -c "router bgp 100"                          \
+    -c "bgp router-id 10.255.0.11"             \
+    -c "neighbor 10.255.0.10 remote-as 100"    \
+    -c "neighbor 10.255.0.10 update-source lo" \
+    -c "neighbor 10.255.0.13 remote-as 100"    \
+    -c "neighbor 10.255.0.13 update-source lo" \
+    -c "exit"
 
-# docker exec R2 \
-# 	vtysh -c "conf t"                         \
-# 	-c "interface lo"                         \
-# 		-c "ip address 10.255.0.12/32"          \
-# 		-c "exit"                               \
-# 	-c "router ospf"                          \
-# 		-c "network 10.255.0.12/32 area 0"      \
-# 		-c "network 10.1.0.0/24 area 0"         \
-# 		-c "network 10.5.0.0/24 area 0"         \
-# 		-c "exit"                               \
-# 	-c "router bgp 100"                       \
-# 		-c "bgp router-id 10.255.0.12"          \
-# 		-c "neighbor 10.255.0.10 remote-as 100" \
-# 		-c "neighbor 10.255.0.10 update-source lo" \
-# 		-c "neighbor 10.255.0.13 remote-as 100" \
-# 		-c "neighbor 10.255.0.13 update-source lo" \
-# 		-c "exit"
+docker exec R2                                 \
+  vtysh -c "conf t"                            \
+  -c "interface lo"                            \
+    -c "ip address 10.255.0.12/32"             \
+    -c "exit"                                  \
+  -c "router ospf"                             \
+    -c "network 10.255.0.12/32 area 0"         \
+    -c "network 10.1.0.0/24 area 0"            \
+    -c "network 10.5.0.0/24 area 0"            \
+    -c "exit"                                  \
+  -c "router bgp 100"                          \
+    -c "bgp router-id 10.255.0.12"             \
+    -c "neighbor 10.255.0.10 remote-as 100"    \
+    -c "neighbor 10.255.0.10 update-source lo" \
+    -c "neighbor 10.255.0.13 remote-as 100"    \
+    -c "neighbor 10.255.0.13 update-source lo" \
+    -c "exit"
 
-# docker exec R3 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 400" \
-# 	-c "bgp router-id 4.4.4.4" \
-# 	-c "neighbor 10.2.0.1 remote-as 200" \
-# 	-c "network 10.4.0.0/24"
+docker exec R3                                 \
+  vtysh -c "conf t"                            \
+  -c "interface lo"                            \
+    -c "ip address 10.255.0.13/32"             \
+    -c "exit"                                  \
+  -c "router ospf"                             \
+    -c "network 10.255.0.13/32 area 0"         \
+    -c "network 10.2.0.0/24 area 0"            \
+    -c "network 10.5.0.0/24 area 0"            \
+    -c "exit"                                  \
+  -c "router bgp 100"                          \
+    -c "bgp router-id 10.255.0.13"             \
+    -c "neighbor 10.255.0.11 remote-as 100"    \
+    -c "neighbor 10.255.0.11 update-source lo" \
+    -c "neighbor 10.255.0.12 remote-as 100"    \
+    -c "neighbor 10.255.0.12 update-source lo" \
+    -c "exit"
+
 
 # docker exec R4 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 400" \
-# 	-c "bgp router-id 4.4.4.4" \
-# 	-c "neighbor 10.2.0.1 remote-as 200" \
-# 	-c "network 10.4.0.0/24"
+#    vtysh -c "conf t" \
+#    -c "router bgp 400" \
+#    -c "bgp router-id 4.4.4.4" \
+#    -c "neighbor 10.2.0.1 remote-as 200" \
+#    -c "network 10.4.0.0/24"
 
 # docker exec R5 \
-# 	vtysh -c "conf t" \
-# 	-c "router bgp 400" \
-# 	-c "bgp router-id 4.4.4.4" \
-# 	-c "neighbor 10.2.0.1 remote-as 200" \
-# 	-c "network 10.4.0.0/24"
+#    vtysh -c "conf t" \
+#    -c "router bgp 400" \
+#    -c "bgp router-id 4.4.4.4" \
+#    -c "neighbor 10.2.0.1 remote-as 200" \
+#    -c "network 10.4.0.0/24"
 
