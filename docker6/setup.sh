@@ -85,6 +85,7 @@ docker exec R0                                 \
     -c "ip address 10.255.0.10/32"             \
     -c "exit"                                  \
   -c "router ospf"                             \
+    -c "redistribute bgp"                      \
     -c "network 10.255.0.10/32 area 0"         \
     -c "network 10.6.0.0/24 area 0"            \
     -c "network 10.1.0.0/24 area 0"            \
@@ -104,6 +105,7 @@ docker exec R1 \
     -c "ip address 10.255.0.11/32"             \
     -c "exit"                                  \
   -c "router ospf"                             \
+    -c "redistribute bgp"                      \
     -c "network 10.255.0.11/32 area 0"         \
     -c "network 10.6.0.0/24 area 0"            \
     -c "network 10.2.0.0/24 area 0"            \
