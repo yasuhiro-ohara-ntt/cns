@@ -9,6 +9,7 @@
 - docker4: BGP network using GoBGP/quagga w/ flowspec liner network
 - docker5: OSPF network using FRR liner network
 - docker6: BGP/OSPF network using FRR closs network (WIP)
+- docker7: NAPT network using FRR/iptables
 
 ## Setup
 
