@@ -7,7 +7,6 @@ import pprint
 f = open("spec.yaml", "r+")
 data = yaml.load(f)
 
-
 print('')
 print('################')
 print('# CREATE NODES #')
@@ -23,7 +22,6 @@ print('###################')
 for sw in data['switches']:
     print('ovs-vsctl add-br {}'.format(sw['name']));
     print('ip link set {} up'.format(sw['name']))
-
 
 links = []
 print('')
@@ -76,7 +74,6 @@ for node in data['nodes']:
 for link in links:
     link.check()
     link.koko()
-
 
 links = []
 print('')
