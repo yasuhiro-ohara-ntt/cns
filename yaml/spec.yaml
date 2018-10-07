@@ -9,12 +9,24 @@ nodes:
       - name: net1
         type: bridge
         opts: B0
+  - name: R1
+    image: slankdev/frr
+    interfaces:
+      - name: net0
+        type: direct
+        opts: C0:net1
+      - name: net1
+        type: bridge
+        opts: B1
   - name: C0
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
         opts: R0:net0
+      - name: net1
+        type: direct
+        opts: R1:net0
   - name: C1
     image: slankdev/ubuntu:16.04
     interfaces:
@@ -27,6 +39,18 @@ nodes:
       - name: net0
         type: bridge
         opts: B0
+  - name: C3
+    image: slankdev/ubuntu:16.04
+    interfaces:
+      - name: net0
+        type: bridge
+        opts: B1
+  - name: C4
+    image: slankdev/ubuntu:16.04
+    interfaces:
+      - name: net0
+        type: bridge
+        opts: B1
 switches:
   - name: B0
     interfaces:
@@ -39,4 +63,15 @@ switches:
       - name: net0
         type: container
         opts: C2
+  - name: B1
+    interfaces:
+      - name: net1
+        type: container
+        opts: R1
+      - name: net0
+        type: container
+        opts: C3
+      - name: net0
+        type: container
+        opts: C4
 
