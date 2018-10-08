@@ -1,7 +1,11 @@
 
 # DESCRIPTION: Basic VXLAN test using Iproute2
-# INIT: cns spec.yaml init | sudo sh && ./setup.sh
-# FINI: cns spec.yaml fini | sudo sh
+# INIT:
+#    cns spec.yaml init | sudo sh
+#    cns spec.yaml conf | sudo sh
+#    cns spec.yaml test | sudo sh
+# FINI:
+#    cns spec.yaml fini | sudo sh
 # TOPO:
 #                       10.0.0.0/24
 #                 .1(net0)      .2(net0)
@@ -43,9 +47,6 @@ node_configs:
     cmds:
     - cmd: ip addr add 10.0.0.2/24 dev net0
     - cmd: ip addr add 192.168.0.10/24 dev net1
-    - cmd: >-
-        ip addr add 1.1.1.1/32
-        dev net0
   - name: C0
     cmds:
     - cmd: ip addr add 192.168.0.2/24 dev net0
