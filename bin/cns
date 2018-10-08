@@ -179,9 +179,27 @@ def fini(data):
         for sw in data['switches']:
             print('ovs-vsctl del-br {}'.format(sw['name']));
 
+def config(data):
+    print('\n################')
+    print('# NODE CONFIG  #')
+    print('################')
+    if 'node_configs' in data:
+        for node in data['node_configs']:
+            for cmd in node['cmds']:
+                print('docker exec {} {}'.format(node['name'], cmd['cmd']))
+
+def test(data):
+    print('\n#####################')
+    print('# INTEGRATION TEST  #')
+    print('#####################')
+    if 'test' in data:
+        for node in data['test']:
+            for cmd in node['cmds']:
+                print('{}'.format(cmd['cmd']))
+
 def main():
     def usage():
-        print('Usage: {} <specfile> {{ init | fini | reset }}'.format(sys.argv[0]))
+        print('Usage: {} <specfile> {{ init | fini | reset | test | config }}'.format(sys.argv[0]))
         sys.exit(1)
 
     argc = len(sys.argv)
@@ -204,6 +222,10 @@ def main():
         generate_kokobr()
         generate_koko_physnet()
         init(data)
+    elif (sys.argv[2] == 'config'):
+        config(data)
+    elif (sys.argv[2] == 'test'):
+        test(data)
     else: usage()
 
 main()
