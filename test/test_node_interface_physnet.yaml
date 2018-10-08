@@ -17,3 +17,11 @@ nodes:
       - name: veth0
         type: phys
 
+node_configs:
+  - name: C0
+    cmds:
+      - cmd: ip addr add 10.10.10.1/24 dev veth0
+
+test:
+  - cmds:
+    - cmd: ping -c2 10.10.10.1
