@@ -42,8 +42,6 @@ $ cns yaml1/spec.yaml fini | sudo sh   // generate and execute fnit shell-script
 
 ## Examples
 
-Sub-projects
-
 - docker : BGP network using FRR circle network
 - docker2: BGP network using FRR liner network
 - docker3: BGP network using GoBGP/quagga liner network
@@ -53,4 +51,13 @@ Sub-projects
 - docker7: NAPT network using FRR/iptables
 - yaml1  : basic network using static route
 - yaml2  : Shownet Emulation (WIP)
+
+## Author and Licence
+
+This is just hobby project. so it's independ to my company.
+This is developed under the Apache License. Please refer thd `LICENCE`.
+
+- Name: Hiroki Shirokura
+- Company: NTT Communications, Tech-Dev Division
+- Email: slankdev [at] nttv6.jp (replace [at] to @)
 
