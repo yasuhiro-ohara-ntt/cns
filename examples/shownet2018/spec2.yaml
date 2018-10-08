@@ -10,67 +10,67 @@ nodes:
     interfaces:
       - name: net0
         type: direct
-        opts: R6:net1
+        opts: R6#net1
       - name: net1
         type: direct
-        opts: R1:net1
+        opts: R1#net1
       - name: net2
         type: direct
-        opts: R3:net1
+        opts: R3#net1
       - name: net3
         type: direct
-        opts: R2:net0
+        opts: R2#net0
   - name: R1
     image: slankdev/frr
     interfaces:
       - name: net0
         type: direct
-        opts: R7:net1
+        opts: R7#net1
       - name: net1
         type: direct
-        opts: R0:net1
+        opts: R0#net1
       - name: net2
         type: direct
-        opts: R2:net1
+        opts: R2#net1
       - name: net3
         type: direct
-        opts: R3:net0
+        opts: R3#net0
   - name: R2
     image: slankdev/frr
     interfaces:
       - name: net0
         type: direct
-        opts: R0:net3
+        opts: R0#net3
       - name: net1
         type: direct
-        opts: R1:net2
+        opts: R1#net2
       - name: net2
         type: direct
-        opts: R3:net2
+        opts: R3#net2
       - name: net3
         type: direct
-        opts: R4:net0
+        opts: R4#net0
   - name: R3
     image: slankdev/frr
     interfaces:
       - name: net0
         type: direct
-        opts: R1:net3
+        opts: R1#net3
       - name: net1
         type: direct
-        opts: R0:net2
+        opts: R0#net2
       - name: net2
         type: direct
-        opts: R2:net2
+        opts: R2#net2
       - name: net3
         type: direct
-        opts: R5:net0
+        opts: R5#net0
   - name: R4
     image: slankdev/frr
     interfaces:
       - name: net0
         type: direct
-        opts: R2:net3
+        opts: R2#net3
       - name: net1
         type: bridge
         opts: B0
@@ -79,7 +79,7 @@ nodes:
     interfaces:
       - name: net0
         type: direct
-        opts: R3:net3
+        opts: R3#net3
       - name: net1
         type: bridge
         opts: B1
@@ -88,37 +88,37 @@ nodes:
     interfaces:
       - name: net0
         type: direct
-        opts: S0:net0
+        opts: S0#net0
       - name: net1
         type: direct
-        opts: R0:net0
+        opts: R0#net0
       - name: net2
         type: direct
-        opts: R7:net2
+        opts: R7#net2
   - name: R7
     image: slankdev/frr
     interfaces:
       - name: net0
         type: direct
-        opts: S1:net0
+        opts: S1#net0
       - name: net1
         type: direct
-        opts: R1:net0
+        opts: R1#net0
       - name: net2
         type: direct
-        opts: R6:net2
+        opts: R6#net2
   - name: S0
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
-        opts: R6:net0
+        opts: R6#net0
   - name: S1
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
-        opts: R7:net0
+        opts: R7#net0
   - name: C0
     image: slankdev/ubuntu:16.04
     interfaces:

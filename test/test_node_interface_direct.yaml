@@ -5,10 +5,10 @@ nodes:
     interfaces:
       - name: net0
         type: direct
-        opts: C1:net
+        opts: C1#net
   - name: C1
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
-        opts: C0:net0
+        opts: C0#net0

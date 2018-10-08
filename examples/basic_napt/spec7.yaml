@@ -32,21 +32,21 @@ nodes:
     interfaces:
       - name: net0
         type: direct
-        opts: S0:net0
+        opts: S0#net0
       - name: net1
         type: direct
-        opts: C0:net0
+        opts: C0#net0
   - name: S0
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
-        opts: R0:net0
+        opts: R0#net0
   - name: C0
     image: slankdev/ubuntu:16.04
     interfaces:
       - name: net0
         type: direct
-        opts: R0:net1
+        opts: R0#net1
 
 

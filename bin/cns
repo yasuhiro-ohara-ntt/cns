@@ -94,8 +94,8 @@ def init(data):
             for i in range(len(node['interfaces'])):
                 iface = node['interfaces'][i]
                 if (iface['type']=='direct'):
-                    r_nname = iface['opts'].split(':')[0]
-                    r_ifname = iface['opts'].split(':')[1]
+                    r_nname = iface['opts'].split('#')[0]
+                    r_ifname = iface['opts'].split('#')[1]
                     peer_found = False
                     for link in links:
                         if link.right_isset == False:
