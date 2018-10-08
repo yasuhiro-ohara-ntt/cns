@@ -1,19 +1,7 @@
 
 # CNS: Container Network Simulation tools
 
-## Sub-projects
-
-- docker : BGP network using FRR circle network
-- docker2: BGP network using FRR liner network
-- docker3: BGP network using GoBGP/quagga liner network
-- docker4: BGP network using GoBGP/quagga w/ flowspec liner network (WIP)
-- docker5: OSPF network using FRR liner network
-- docker6: BGP/OSPF network using FRR closs network (WIP)
-- docker7: NAPT network using FRR/iptables
-- yaml1  : basic network using static route
-- yaml2  : Shownet Emulation (WIP)
-
-## Setup
+## Setup and Usage
 
 preparation
 ```
@@ -39,8 +27,8 @@ $ sudo cp $GOPATH/bin/koko /usr/local/bin
 install cns
 ```
 $ git clone https://github.com/slankdev/cns && cd cns
-$ sudo cp tools/python/cns /usr/local/bin    // pattern1
-$ export PATH=$PATH:`pwd`/tools/python/      // pattern2
+$ sudo cp bin/cns /usr/local/bin    # pattern1
+$ export PATH=$PATH:`pwd`/bin       # pattern2
 ```
 
 usage
@@ -51,3 +39,18 @@ $ cns yaml1/spec.yaml fini             // generate fini shell-script to stdout
 $ cns yaml1/spec.yaml init | sudo sh   // generate and execute init shell-script
 $ cns yaml1/spec.yaml fini | sudo sh   // generate and execute fnit shell-script
 ```
+
+## Examples
+
+Sub-projects
+
+- docker : BGP network using FRR circle network
+- docker2: BGP network using FRR liner network
+- docker3: BGP network using GoBGP/quagga liner network
+- docker4: BGP network using GoBGP/quagga w/ flowspec liner network (WIP)
+- docker5: OSPF network using FRR liner network
+- docker6: BGP/OSPF network using FRR closs network (WIP)
+- docker7: NAPT network using FRR/iptables
+- yaml1  : basic network using static route
+- yaml2  : Shownet Emulation (WIP)
+
