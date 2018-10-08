@@ -9,8 +9,8 @@ on [readme](README.md).
 setup the virtual network.
 ```
 $ cd cns/examples/basic_ebgp
-$ cns spec5.yaml init | sudo sh
-$ ./setup5.sh
+$ cns init | sudo sh
+$ cns conf | sudo sh
 $ docker ps   # you can check the each network node as-a Container.
 ```
 
@@ -52,5 +52,5 @@ PING 10.4.0.2 (10.4.0.2) 56(84) bytes of data.
 
 finally, destroy the virtual network.
 ```
-$ cns spec5.yaml fini | sudo sh
+$ cns fini | sudo sh
 ```

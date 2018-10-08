@@ -199,32 +199,40 @@ def test(data):
 
 def main():
     def usage():
-        print('Usage: {} <specfile> {{ init | fini | reset | test | conf }}'.format(sys.argv[0]))
+        print('USAGE: {} [-f <specfile>] {{ SUBCMD }}'.format(sys.argv[0]))
+        print('OPTIONS:                               ')
+        print('     -f <specfile>   specify cns-spec-file (default spec.yaml)')
+        print('SUBCMD:                                  ')
+        print('     init     --     generate setup script')
+        print('     fini     --     generate destroy script')
+        print('     test     --     generate test script')
+        print('     conf     --     generate configuration script')
+        print('     reset    --     generate destroy and setup script')
         sys.exit(1)
 
     argc = len(sys.argv)
-    if (argc != 3):
+    if (argc != 2):
         usage()
 
-    f = open(sys.argv[1], "r+")
-    data = yaml.load(f)
+    specfile = './spec.yaml'
+    data = yaml.load(open(specfile, "r+"))
 
-    if (sys.argv[2] == 'init'):
+    if (sys.argv[1] == 'init'):
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[2] == 'fini'):
+    elif (sys.argv[1] == 'fini'):
         fini(data)
-    elif (sys.argv[2] == 'reset'):
+    elif (sys.argv[1] == 'reset'):
         fini(data)
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[2] == 'conf'):
+    elif (sys.argv[1] == 'conf'):
         config(data)
-    elif (sys.argv[2] == 'test'):
+    elif (sys.argv[1] == 'test'):
         test(data)
     else: usage()
 
