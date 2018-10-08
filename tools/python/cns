@@ -32,6 +32,19 @@ def generate_kokobr():
     p('  ovs-vsctl add-port $1 peer_$2_$3                  ')
     p('}                                                   ')
 
+def generate_koko_physnet():
+    p = print
+    p('koko_physnet () {                       ')
+    p('  if [ $# -ne 2 ]; then                 ')
+    p('    echo "Usage: $0 <container> <netif>"')
+    p('    exit 1                              ')
+    p('  fi                                    ')
+    p('  mount_docker_netns $1 $1              ')
+    p('  ip link set dev $2 netns $1           ')
+    p('  ip netns exec $1 ip link set $2 up    ')
+    p('  ip netns del $1                       ')
+    p('}                                       ')
+
 def init(data):
     print('')
     print('################')
@@ -163,6 +176,7 @@ def main():
     if (sys.argv[2] == 'init'):
         generate_mount_docker_netns()
         generate_kokobr()
+        generate_koko_physnet()
         init(data)
     elif (sys.argv[2] == 'fini'): fini(data)
     else: usage()
