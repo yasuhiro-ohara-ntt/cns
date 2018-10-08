@@ -3,6 +3,7 @@
 import sys
 import yaml
 import pprint
+import argparse
 
 def generate_mount_docker_netns():
     p = print
@@ -198,42 +199,41 @@ def test(data):
                 print('{}'.format(cmd['cmd']))
 
 def main():
-    def usage():
-        print('USAGE: {} [-f <specfile>] {{ SUBCMD }}'.format(sys.argv[0]))
-        print('OPTIONS:                               ')
-        print('     -f <specfile>   specify cns-spec-file (default spec.yaml)')
-        print('SUBCMD:                                  ')
-        print('     init     --     generate setup script')
-        print('     fini     --     generate destroy script')
-        print('     test     --     generate test script')
-        print('     conf     --     generate configuration script')
-        print('     reset    --     generate destroy and setup script')
-        sys.exit(1)
 
-    argc = len(sys.argv)
-    if (argc != 2):
-        usage()
+    parser = argparse.ArgumentParser(
+            formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('option',
+            choices=['init', 'fini', 'reset', 'conf', 'test'],
+            help='init       generate setup script \n'
+                 'fini       generate destroy script \n'
+                 'test       generate test script \n'
+                 'conf       generate configuration script \n'
+                 'reset      generate destroy and setup script \n')
+    parser.add_argument('-f', '--specfile', default='spec.yaml')
+    args = parser.parse_args()
+    specfile = args.specfile
+    option = args.option
 
-    specfile = './spec.yaml'
     data = yaml.load(open(specfile, "r+"))
 
-    if (sys.argv[1] == 'init'):
+    if (option == 'init'):
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[1] == 'fini'):
+    elif (option == 'fini'):
         fini(data)
-    elif (sys.argv[1] == 'reset'):
+    elif (option == 'reset'):
         fini(data)
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[1] == 'conf'):
+    elif (option == 'conf'):
         config(data)
-    elif (sys.argv[1] == 'test'):
+    elif (option == 'test'):
         test(data)
-    else: usage()
+    else:
+        parser.print_help()
 
 main()
