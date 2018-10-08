@@ -199,7 +199,7 @@ def test(data):
 
 def main():
     def usage():
-        print('Usage: {} <specfile> {{ init | fini | reset | test | config }}'.format(sys.argv[0]))
+        print('Usage: {} <specfile> {{ init | fini | reset | test | conf }}'.format(sys.argv[0]))
         sys.exit(1)
 
     argc = len(sys.argv)
@@ -222,7 +222,7 @@ def main():
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[2] == 'config'):
+    elif (sys.argv[2] == 'conf'):
         config(data)
     elif (sys.argv[2] == 'test'):
         test(data)
