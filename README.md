@@ -1,6 +1,11 @@
 
 # CNS: Container Network Simulation tools
 
+Container Network Simulation tools.
+User can generate the script to build
+the L2 container network from YAML file.
+Quickstart is talked at [QUICKSTART.md](QUICKSTART.md).
+
 ## Setup and Usage
 
 preparation
