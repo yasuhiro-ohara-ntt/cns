@@ -50,16 +50,18 @@ def init(data):
     print('################')
     print('# CREATE NODES #')
     print('################')
-    for node in data['nodes']:
-        print('docker run -td --hostname {} --name {} --rm --privileged {}'
-                .format(node['name'], node['name'], node['image']))
+    if 'nodes' in data:
+        for node in data['nodes']:
+            print('docker run -td --hostname {} --name {} --rm --privileged {}'
+                    .format(node['name'], node['name'], node['image']))
 
     print('')
     print('###################')
     print('# CREATE SWITCHES #')
     print('###################')
-    for sw in data['switches']:
-        print('ovs-vsctl add-br {} && ip link set {} up'.format(sw['name'], sw['name']));
+    if 'switches' in data:
+        for sw in data['switches']:
+            print('ovs-vsctl add-br {} && ip link set {} up'.format(sw['name'], sw['name']));
 
     links = []
     print('')
@@ -87,28 +89,29 @@ def init(data):
             if not (self.right_isset and self.left_isset):
                 Exception('n2n_link state is not correct')
 
-    for node in data['nodes']:
-        for i in range(len(node['interfaces'])):
-            iface = node['interfaces'][i]
-            if (iface['type']=='direct'):
-                r_nname = iface['opts'].split(':')[0]
-                r_ifname = iface['opts'].split(':')[1]
-                peer_found = False
-                for link in links:
-                    if link.right_isset == False:
-                        b0 = link.left_node_name == r_nname
-                        b1 = link.left_iface_name == r_ifname
-                        if b0 and b1: # found peer
-                            link.right_node_name = node['name']
-                            link.right_iface_name = iface['name']
-                            link.right_isset = True
-                            peer_found = True
-                if peer_found == False:
-                    new_link = n2n_link(node['name'], iface['name'], r_nname, r_ifname)
-                    links.append(new_link)
-    for link in links:
-        link.check()
-        link.koko()
+    if 'nodes' in data:
+        for node in data['nodes']:
+            for i in range(len(node['interfaces'])):
+                iface = node['interfaces'][i]
+                if (iface['type']=='direct'):
+                    r_nname = iface['opts'].split(':')[0]
+                    r_ifname = iface['opts'].split(':')[1]
+                    peer_found = False
+                    for link in links:
+                        if link.right_isset == False:
+                            b0 = link.left_node_name == r_nname
+                            b1 = link.left_iface_name == r_ifname
+                            if b0 and b1: # found peer
+                                link.right_node_name = node['name']
+                                link.right_iface_name = iface['name']
+                                link.right_isset = True
+                                peer_found = True
+                    if peer_found == False:
+                        new_link = n2n_link(node['name'], iface['name'], r_nname, r_ifname)
+                        links.append(new_link)
+        for link in links:
+            link.check()
+            link.koko()
 
     links = []
     print('')
@@ -133,37 +136,52 @@ def init(data):
             if not (self.node_isset and self.switch_isset):
                 Exception('s2n_link state is not correct')
 
-    for node in data['nodes']:
-        for i in range(len(node['interfaces'])):
-            iface = node['interfaces'][i]
-            if (iface['type']=='bridge'):
-                new_link = s2n_link(node['name'], iface['name'], iface['opts'])
-                new_link.node_isset = True
-                new_link.switch_isset = False
-                links.append(new_link)
-    for sw in data['switches']:
-        for i in range(len(sw['interfaces'])):
-            iface = sw['interfaces'][i]
-            for link in links:
-                if link.switch_isset == False:
-                    b0 = iface['opts'] == link.node_name
-                    b1 = iface['name'] == link.node_iface
-                    b2 = sw['name'] == link.switch_name
-                    if b0 and b1 and b2:
-                        link.switch_isset = True
-    for link in links:
-        link.check()
-        link.koko()
+    if ('nodes' in data) and ('switches' in data):
+        for node in data['nodes']:
+            for i in range(len(node['interfaces'])):
+                iface = node['interfaces'][i]
+                if (iface['type']=='bridge'):
+                    new_link = s2n_link(node['name'], iface['name'], iface['opts'])
+                    new_link.node_isset = True
+                    new_link.switch_isset = False
+                    links.append(new_link)
+        for sw in data['switches']:
+            for i in range(len(sw['interfaces'])):
+                iface = sw['interfaces'][i]
+                for link in links:
+                    if link.switch_isset == False:
+                        b0 = iface['opts'] == link.node_name
+                        b1 = iface['name'] == link.node_iface
+                        b2 = sw['name'] == link.switch_name
+                        if b0 and b1 and b2:
+                            link.switch_isset = True
+        for link in links:
+            link.check()
+            link.koko()
+
+    print('')
+    print('#################################')
+    print('# Attach PhysNetIf to Conitaner #')
+    print('#################################')
+    if 'nodes' in data:
+        for node in data['nodes']:
+            for i in range(len(node['interfaces'])):
+                iface = node['interfaces'][i]
+                if (iface['type']=='phys'):
+                    print('koko_physnet {} {}'.format(node['name'], iface['name']))
+
 
 def fini(data):
-    for node in data['nodes']:
-        print('docker stop {}'.format(node['name']))
-    for sw in data['switches']:
-        print('ovs-vsctl del-br {}'.format(sw['name']));
+    if 'nodes' in data:
+        for node in data['nodes']:
+            print('docker stop {}'.format(node['name']))
+    if 'switches' in data:
+        for sw in data['switches']:
+            print('ovs-vsctl del-br {}'.format(sw['name']));
 
 def main():
     def usage():
-        print('Usage: {} <specfile> {{init|fini}}'.format(sys.argv[0]))
+        print('Usage: {} <specfile> {{ init | fini | reset }}'.format(sys.argv[0]))
         sys.exit(1)
 
     argc = len(sys.argv)
@@ -178,7 +196,14 @@ def main():
         generate_kokobr()
         generate_koko_physnet()
         init(data)
-    elif (sys.argv[2] == 'fini'): fini(data)
+    elif (sys.argv[2] == 'fini'):
+        fini(data)
+    elif (sys.argv[2] == 'reset'):
+        fini(data)
+        generate_mount_docker_netns()
+        generate_kokobr()
+        generate_koko_physnet()
+        init(data)
     else: usage()
 
 main()
