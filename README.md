@@ -1,5 +1,5 @@
 
-# goodns
+# CNS: Container Network Simulation tools
 
 ## Sub-projects
 
