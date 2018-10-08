@@ -43,3 +43,11 @@ $ sudo cp tools/python/cns /usr/local/bin    // pattern1
 $ export PATH=$PATH:`pwd`/tools/python/      // pattern2
 ```
 
+usage
+```
+$ cns                                  // show usage
+$ cns yaml1/spec.yaml init             // generate init shell-script to stdout
+$ cns yaml1/spec.yaml fini             // generate fini shell-script to stdout
+$ cns yaml1/spec.yaml init | sudo sh   // generate and execute init shell-script
+$ cns yaml1/spec.yaml fini | sudo sh   // generate and execute fnit shell-script
+```
