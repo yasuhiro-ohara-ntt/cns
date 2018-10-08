@@ -42,11 +42,33 @@ node_configs:
   - name: R0
     cmds:
     - cmd: ip addr add 10.0.0.1/24 dev net0
-    - cmd: ip addr add 192.168.0.1/24 dev net1
+    - cmd: ip link add br0 type bridge
+    - cmd: ip link set dev br0 up
+    - cmd: ip link set dev net1 master br0
+    - cmd: ip link set dev net1 promisc on
+    - cmd: ip link set dev net1 up
+    - cmd: ip addr add 192.168.0.1/24 dev br0
+    - cmd: >-
+        ip link add vxlan100 type vxlan id 100
+        dstport 4789 group 239.0.1.1 ttl 10 dev net0
+    - cmd: ip link set dev vxlan100 master br0
+    - cmd: ip link set dev vxlan100 promisc on
+    - cmd: ip link set dev vxlan100 up
   - name: R1
     cmds:
     - cmd: ip addr add 10.0.0.2/24 dev net0
-    - cmd: ip addr add 192.168.0.10/24 dev net1
+    - cmd: ip link add br0 type bridge
+    - cmd: ip link set dev br0 up
+    - cmd: ip link set dev net1 master br0
+    - cmd: ip link set dev net1 promisc on
+    - cmd: ip link set dev net1 up
+    - cmd: ip addr add 192.168.0.10/24 dev br0
+    - cmd: >-
+        ip link add vxlan100 type vxlan id 100
+        dstport 4789 group 239.0.1.1 ttl 10 dev net0
+    - cmd: ip link set dev vxlan100 master br0
+    - cmd: ip link set dev vxlan100 promisc on
+    - cmd: ip link set dev vxlan100 up
   - name: C0
     cmds:
     - cmd: ip addr add 192.168.0.2/24 dev net0
@@ -59,4 +81,5 @@ test:
     - cmd: docker exec C0 ping -c2 192.168.0.1
     - cmd: docker exec C1 ping -c2 192.168.0.10
     - cmd: docker exec R0 ping -c2 10.0.0.2
+    - cmd: docker exec C0 ping -c2 192.168.0.20
 
