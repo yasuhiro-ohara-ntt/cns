@@ -1,7 +1,10 @@
 
 CNS=../bin/cns
 
-all: test_node_interface_physnet
+all: \
+	test_node_interface_physnet \
+	test_node_interface_bridge \
+	test_node_interface_direct
 
 test_node_interface_physnet:
 	sudo ip link add veth0 type veth peer name veth1
@@ -12,3 +15,19 @@ test_node_interface_physnet:
 	ping -c2 10.10.10.1
 	$(CNS) test_node_interface_physnet.yaml fini | sudo sh
 
+test_node_interface_bridge:
+	$(CNS) test_node_interface_bridge.yaml init | sudo sh
+	docker exec C0 ip addr add 10.0.0.10/24 dev net0
+	docker exec C1 ip addr add 10.0.0.11/24 dev net0
+	docker exec C2 ip addr add 10.0.0.12/24 dev net0
+	docker exec C0 ping -c2 10.0.0.11
+	docker exec C1 ping -c2 10.0.0.12
+	docker exec C2 ping -c2 10.0.0.10
+	$(CNS) test_node_interface_bridge.yaml fini | sudo sh
+
+test_node_interface_direct:
+	$(CNS) test_node_interface_direct.yaml init | sudo sh
+	docker exec C0 ip addr add 10.0.0.10/24 dev net0
+	docker exec C1 ip addr add 10.0.0.11/24 dev net0
+	docker exec C0 ping -c2 10.0.0.11
+	$(CNS) test_node_interface_direct.yaml fini | sudo sh
