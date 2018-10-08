@@ -1,4 +1,9 @@
 
+# DESCRIPTION: Shownet2018 Emulation (WIP)
+# INIT: cns spec2.yaml init | sudo sh && ./setup2.sh
+# FINI: cns spec2.yaml fini | sudo sh
+# TOPO: todo
+
 nodes:
   - name: R0
     image: slankdev/frr
