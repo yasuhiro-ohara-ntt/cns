@@ -4,6 +4,34 @@ import sys
 import yaml
 import pprint
 
+def generate_mount_docker_netns():
+    p = print
+    p('mount_docker_netns () {                          ')
+    p('  if [ $# -ne 2 ]; then                          ')
+    p('    echo "Usage: $0 <container> <netns>"         ')
+    p('    exit 1                                       ')
+    p('  fi                                             ')
+    p('  mkdir -p /var/run/netns                        ')
+    p('  PID=`docker inspect $1 -f "{{.State.Pid}}"`    ')
+    p('  ln -s /proc/$PID/ns/net /var/run/netns/$2      ')
+    p('}                                                ')
+
+def generate_kokobr():
+    p = print
+    p('kokobr () {                                         ')
+    p('  if [ $# -ne 3 ]; then                             ')
+    p('    echo "Usage: $0 <bridge> <container> <ifname>"  ')
+    p('    exit 1                                          ')
+    p('  fi                                                ')
+    p('  mount_docker_netns $2 $2                          ')
+    p('  ip link add name $3 type veth peer name peer_$2_$3')
+    p('  ip link set dev $3 netns $2                       ')
+    p('  ip link set peer_$2_$3 up                         ')
+    p('  ip netns exec $2 ip link set $3 up                ')
+    p('  ip netns del $2                                   ')
+    p('  ovs-vsctl add-port $1 peer_$2_$3                  ')
+    p('}                                                   ')
+
 def init(data):
     print('')
     print('################')
@@ -18,8 +46,7 @@ def init(data):
     print('# CREATE SWITCHES #')
     print('###################')
     for sw in data['switches']:
-        print('ovs-vsctl add-br {}'.format(sw['name']));
-        print('ip link set {} up'.format(sw['name']))
+        print('ovs-vsctl add-br {} && ip link set {} up'.format(sw['name'], sw['name']));
 
     links = []
     print('')
@@ -75,18 +102,6 @@ def init(data):
     print('###############################')
     print('# CREATE Node to Switch LINKS #')
     print('###############################')
-    def kokobr(cname, cifname, brname):
-        print('PID=`docker inspect {} -f "{{{{.State.Pid}}}}"`'.format(cname))
-        print('mkdir -p /var/run/netns')
-        print('ln -s /proc/$PID/ns/net /var/run/netns/{}'.format(cname))
-        print('ip link add name {} type veth peer name peer_{}_{}'.format(cifname, cname, cifname))
-        print('ip link set dev {} netns {}'.format(cifname, cname))
-        print('ip link set peer_{}_{} up'.format(cname, cifname))
-        print('ip netns exec {} ip link set {} up'.format(cname, cifname))
-        print('ip netns del {}'.format(cname))
-        print('ovs-vsctl add-port {} peer_{}_{}'.format(brname, cname, cifname))
-        print('')
-
     class s2n_link:
         node_name = None
         node_iface = None
@@ -99,7 +114,7 @@ def init(data):
             self.switch_name = s_name
 
         def koko(self):
-            kokobr(self.node_name, self.node_iface, self.switch_name)
+            print('kokobr {} {} {}'.format(self.switch_name, self.node_name, self.node_iface))
 
         def check(self):
             if not (self.node_isset and self.switch_isset):
@@ -145,7 +160,10 @@ def main():
     f = open(sys.argv[1], "r+")
     data = yaml.load(f)
 
-    if (sys.argv[2] == 'init'): init(data)
+    if (sys.argv[2] == 'init'):
+        generate_mount_docker_netns()
+        generate_kokobr()
+        init(data)
     elif (sys.argv[2] == 'fini'): fini(data)
     else: usage()
 
