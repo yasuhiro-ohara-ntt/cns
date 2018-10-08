@@ -50,3 +50,28 @@ nodes:
         type: direct
         opts: R1:net1
 
+node_configs:
+  - name: R0
+    cmds:
+    - cmd: ip addr add 10.0.0.1/24 dev net0
+    - cmd: ip addr add 192.168.0.1/24 dev net1
+  - name: R1
+    cmds:
+    - cmd: ip addr add 10.0.0.2/24 dev net0
+    - cmd: ip addr add 192.168.0.10/24 dev net1
+    - cmd: >-
+        ip addr add 1.1.1.1/32
+        dev net0
+  - name: C0
+    cmds:
+    - cmd: ip addr add 192.168.0.2/24 dev net0
+  - name: C1
+    cmds:
+    - cmd: ip addr add 192.168.0.20/24 dev net0
+
+test:
+  - cmds:
+    - cmd: docker exec C0 ping -c2 192.168.0.1
+    - cmd: docker exec C1 ping -c2 192.168.0.10
+    - cmd: docker exec R0 ping -c2 10.0.0.2
+
