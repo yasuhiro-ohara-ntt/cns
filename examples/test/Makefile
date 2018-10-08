@@ -1,5 +1,5 @@
 
-CNS=../bin/cns
+CNS=../../bin/cns
 
 all: \
 	test_node_interface_physnet \
