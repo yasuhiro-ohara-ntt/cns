@@ -21,10 +21,10 @@
 #
 
 nodes:
-  # - name: RR0
-  #   image: slankdev/frr
-  #   interfaces:
-  #     - { name: net0, type: bridge, opts: B0 }
+  - name: RR0
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: bridge, opts: B0 }
   - name: R0
     image: slankdev/frr
     interfaces:
@@ -49,9 +49,30 @@ switches:
     interfaces:
       - { name: net0, type: container, opts: R0 }
       - { name: net0, type: container, opts: R1 }
-      # - { name: net0, type: container, opts: RR0 }
+      - { name: net0, type: container, opts: RR0 }
 
 node_configs:
+  - name: RR0
+    cmds:
+      - cmd: ip addr add 3.3.3.3/32 dev lo
+      - cmd: ip addr add 10.0.0.3/24 dev net0
+      - cmd: ip route add 1.1.1.1/32 via 10.0.0.1
+      - cmd: ip route add 2.2.2.2/32 via 10.0.0.2
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router bgp 100                  "
+          -c "  bgp router-id 3.3.3.3         "
+          -c "  neighbor 1.1.1.1 remote-as 100"
+          -c "  neighbor 1.1.1.1 update-source lo"
+          -c "  neighbor 2.2.2.2 remote-as 100"
+          -c "  neighbor 2.2.2.2 update-source lo"
+          -c "  address-family l2vpn evpn     "
+          -c "    neighbor 1.1.1.1 activate   "
+          -c "    neighbor 1.1.1.1 route-reflector-client"
+          -c "    neighbor 2.2.2.2 activate   "
+          -c "    neighbor 2.2.2.2 route-reflector-client"
+          -c "    advertise-all-vni           "
+          -c "  exit-address-family           "
   - name: R0
     cmds:
       - cmd: ip addr add 1.1.1.1/32 dev lo
@@ -63,6 +84,7 @@ node_configs:
       - cmd: ip link set dev net1 up
       - cmd: ip addr add 192.168.0.1/24 dev br0
       - cmd: ip route add 2.2.2.2/32 via 10.0.0.2
+      - cmd: ip route add 3.3.3.3/32 via 10.0.0.3
       - cmd: >-
           ip link add vxlan100 type vxlan id 100
           dstport 4789 local 1.1.1.1
@@ -73,10 +95,10 @@ node_configs:
           vtysh -c "conf t"
           -c "router bgp 100                  "
           -c "  bgp router-id 1.1.1.1         "
-          -c "  neighbor 2.2.2.2 remote-as 100"
-          -c "  neighbor 2.2.2.2 update-source lo"
+          -c "  neighbor 3.3.3.3 remote-as 100"
+          -c "  neighbor 3.3.3.3 update-source lo"
           -c "  address-family l2vpn evpn     "
-          -c "    neighbor 2.2.2.2 activate   "
+          -c "    neighbor 3.3.3.3 activate   "
           -c "    advertise-all-vni           "
           -c "  exit-address-family           "
 
@@ -91,6 +113,7 @@ node_configs:
       - cmd: ip link set dev net1 up
       - cmd: ip addr add 192.168.0.10/24 dev br0
       - cmd: ip route add 1.1.1.1/32 via 10.0.0.1
+      - cmd: ip route add 3.3.3.3/32 via 10.0.0.3
       - cmd: >-
           ip link add vxlan100 type vxlan id 100
           dstport 4789 local 2.2.2.2
@@ -101,10 +124,10 @@ node_configs:
           vtysh -c "conf t"
           -c "router bgp 100                  "
           -c "  bgp router-id 2.2.2.2         "
-          -c "  neighbor 1.1.1.1 remote-as 100"
-          -c "  neighbor 1.1.1.1 update-source lo"
+          -c "  neighbor 3.3.3.3 remote-as 100"
+          -c "  neighbor 3.3.3.3 update-source lo"
           -c "  address-family l2vpn evpn     "
-          -c "    neighbor 1.1.1.1 activate   "
+          -c "    neighbor 3.3.3.3 activate   "
           -c "    advertise-all-vni           "
           -c "  exit-address-family           "
 
