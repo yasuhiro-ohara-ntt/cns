@@ -50,30 +50,32 @@ nodes:
       - { name: net0, type: direct, opts: R1#net2 }
 
 node_configs:
-  # - name: R0
-  #   cmds:
-  #   - cmd: ip addr add 10.0.0.1/24 dev net0
-  #   - cmd: >-
-  #       ip link add vxlan100 type vxlan id 100
-  #       dstport 4789 group 239.0.1.1 ttl 10 dev net0
-  #   - cmd: ip link set dev vxlan100 master br0
-  #   - cmd: ip link set dev vxlan100 promisc on
-  #   - cmd: ip link set dev vxlan100 up
-  # - name: R1
-  #   cmds:
-  #   - cmd: ip addr add 10.0.0.2/24 dev net0
-  #   - cmd: ip link add br0 type bridge
-  #   - cmd: ip link set dev br0 up
-  #   - cmd: ip link set dev net1 master br0
-  #   - cmd: ip link set dev net1 promisc on
-  #   - cmd: ip link set dev net1 up
-  #   - cmd: ip addr add 192.168.0.10/24 dev br0
-  #   - cmd: >-
-  #       ip link add vxlan100 type vxlan id 100
-  #       dstport 4789 group 239.0.1.1 ttl 10 dev net0
-  #   - cmd: ip link set dev vxlan100 master br0
-  #   - cmd: ip link set dev vxlan100 promisc on
-  #   - cmd: ip link set dev vxlan100 up
+
+  - name: R0
+    cmds:
+      - cmd: ip link add vrf0 type vrf table 10
+      - cmd: ip link set dev vrf0 up
+      - cmd: ip link add vrf1 type vrf table 11
+      - cmd: ip link set dev vrf1 up
+      - cmd: ip addr add 192.168.10.1/24 dev net1
+      - cmd: ip link set dev net1 master vrf0
+      - cmd: ip link set dev net1 up
+      - cmd: ip addr add 192.168.10.1/24 dev net2
+      - cmd: ip link set dev net2 master vrf1
+      - cmd: ip link set dev net2 up
+
+  - name: R1
+    cmds:
+      - cmd: ip link add vrf0 type vrf table 10
+      - cmd: ip link set dev vrf0 up
+      - cmd: ip link add vrf1 type vrf table 11
+      - cmd: ip link set dev vrf1 up
+      - cmd: ip addr add 192.168.20.1/24 dev net1
+      - cmd: ip link set dev net1 master vrf0
+      - cmd: ip link set dev net1 up
+      - cmd: ip addr add 192.168.20.1/24 dev net2
+      - cmd: ip link set dev net2 master vrf1
+      - cmd: ip link set dev net2 up
 
   - { name: C00, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
   - { name: C10, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
