@@ -75,18 +75,10 @@ node_configs:
   #   - cmd: ip link set dev vxlan100 promisc on
   #   - cmd: ip link set dev vxlan100 up
 
-  - name: C00
-    cmds:
-    - cmd: ip addr add 192.168.10.2/24 dev net0
-  - name: C10
-    cmds:
-    - cmd: ip addr add 192.168.10.2/24 dev net0
-  - name: C01
-    cmds:
-    - cmd: ip addr add 192.168.20.2/24 dev net0
-  - name: C11
-    cmds:
-    - cmd: ip addr add 192.168.20.2/24 dev net0
+  - { name: C00, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
+  - { name: C10, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
+  - { name: C01, cmds: [ cmd: 'ip addr add 192.168.20.2/24 dev net0' ] }
+  - { name: C11, cmds: [ cmd: 'ip addr add 192.168.20.2/24 dev net0' ] }
 
 test:
   - cmds:
