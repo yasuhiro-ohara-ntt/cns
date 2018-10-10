@@ -10,6 +10,7 @@ Quickstart is talked at [QUICKSTART.md](QUICKSTART.md).
 
 preparation
 ```
+$ sudo apt install linux-image-extra-virtual  ##XXX:
 $ sudo apt update && sudo apt install -y \
     apt-transport-https ca-certificates curl \
     software-properties-common \
