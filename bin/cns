@@ -203,8 +203,9 @@ def main():
     parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('option',
-            choices=['init', 'fini', 'reset', 'conf', 'test'],
-            help='init       generate setup script \n'
+            choices=['func', 'init', 'fini', 'reset', 'conf', 'test'],
+            help='func       just generate helper funcs \n'
+                 'init       generate setup script \n'
                  'fini       generate destroy script \n'
                  'test       generate test script \n'
                  'conf       generate configuration script \n'
@@ -214,24 +215,32 @@ def main():
     specfile = args.specfile
     option = args.option
 
-    data = yaml.load(open(specfile, "r+"))
 
-    if (option == 'init'):
+    if (option == 'func'):
+        generate_mount_docker_netns()
+        generate_kokobr()
+        generate_koko_physnet()
+    elif (option == 'init'):
+        data = yaml.load(open(specfile, "r+"))
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
     elif (option == 'fini'):
+        data = yaml.load(open(specfile, "r+"))
         fini(data)
     elif (option == 'reset'):
+        data = yaml.load(open(specfile, "r+"))
         fini(data)
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
         init(data)
     elif (option == 'conf'):
+        data = yaml.load(open(specfile, "r+"))
         config(data)
     elif (option == 'test'):
+        data = yaml.load(open(specfile, "r+"))
         test(data)
     else:
         parser.print_help()
