@@ -1,49 +1,73 @@
 
 # DESCRIPTION: OVS port-vlan test
 # TOPO:
-#                 192.168.10.0/24
-#   C0------------------+  +------------------C1
-#      .1(net0)         |  |          .2(net0)
-#                       [B0]
-#      .1(net0)         |  |          .2(net0)
-#   C2------------------+  +------------------C3
-#                  192.168.20.0/24
+#                       192.168.10.0/24
+#   C0------------------+            +-----------------C2
+#     .1(net0)     swp0 | swp2       | swp0    .2(net0)
+#                   [SW0]----------[SW1]
+#     .1(net0)     swp1 |      swp2  | swp1    .2(net0)
+#   C1------------------+            +-----------------C3
+#                       192.168.20.0/24
 #
 
 nodes:
   - name: C0
     image: slankdev/ubuntu:16.04
-    interfaces: [{ name: net0, type: bridge, opts: B0 }]
+    interfaces: [{ name: net0, type: direct, opts: SW0#swp0 }]
   - name: C1
     image: slankdev/ubuntu:16.04
-    interfaces: [{ name: net0, type: bridge, opts: B0 }]
+    interfaces: [{ name: net0, type: direct, opts: SW0#swp1 }]
+
   - name: C2
     image: slankdev/ubuntu:16.04
-    interfaces: [{ name: net0, type: bridge, opts: B0 }]
+    interfaces: [{ name: net0, type: direct, opts: SW1#swp0 }]
   - name: C3
     image: slankdev/ubuntu:16.04
-    interfaces: [{ name: net0, type: bridge, opts: B0 }]
+    interfaces: [{ name: net0, type: direct, opts: SW1#swp1 }]
 
-switches:
-  - name: B0
+  - name: SW0
+    # image: slankdev/ovs
+    image: tmp
     interfaces:
-      - { name: net0, type: container, opts: C0 }
-      - { name: net0, type: container, opts: C1 }
-      - { name: net0, type: container, opts: C2 }
-      - { name: net0, type: container, opts: C3 }
+      - { name: swp0, type: direct, opts: C0#net0 }
+      - { name: swp1, type: direct, opts: C1#net0 }
+      - { name: swp2, type: direct, opts: SW1#swp2 }
+  - name: SW1
+    # image: slankdev/ovs
+    image: tmp
+    interfaces:
+      - { name: swp0, type: direct, opts: C2#net0 }
+      - { name: swp1, type: direct, opts: C3#net0 }
+      - { name: swp2, type: direct, opts: SW0#swp2 }
 
 node_configs:
   - { name: C0, cmds: [ cmd: 'ip addr add 192.168.10.1/24 dev net0' ] }
-  - { name: C1, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
-  - { name: C2, cmds: [ cmd: 'ip addr add 192.168.20.1/24 dev net0' ] }
+  - { name: C1, cmds: [ cmd: 'ip addr add 192.168.20.1/24 dev net0' ] }
+  - { name: C2, cmds: [ cmd: 'ip addr add 192.168.10.2/24 dev net0' ] }
   - { name: C3, cmds: [ cmd: 'ip addr add 192.168.20.2/24 dev net0' ] }
+  - name: SW0
+    cmds:
+      - cmd: ovs-vsctl add-br ovs0
+      - cmd: ovs-vsctl add-port ovs0 swp0
+      - cmd: ovs-vsctl add-port ovs0 swp1
+      - cmd: ovs-vsctl add-port ovs0 swp2
+      - cmd: ovs-vsctl set port swp0 tag=10
+      - cmd: ovs-vsctl set port swp1 tag=20
+      - cmd: ovs-vsctl set port swp2 trunk=10,20
+      - cmd: ip link set ovs0 up
+  - name: SW1
+    cmds:
+      - cmd: ovs-vsctl add-br ovs0
+      - cmd: ovs-vsctl add-port ovs0 swp0
+      - cmd: ovs-vsctl add-port ovs0 swp1
+      - cmd: ovs-vsctl add-port ovs0 swp2
+      - cmd: ovs-vsctl set port swp0 tag=10
+      - cmd: ovs-vsctl set port swp1 tag=20
+      - cmd: ovs-vsctl set port swp2 trunk=10,20
+      - cmd: ip link set ovs0 up
 
 test:
   - cmds:
-    - cmd: ovs-vsctl set port peer_C0_net0 tag=10
-    - cmd: ovs-vsctl set port peer_C1_net0 tag=10
-    - cmd: ovs-vsctl set port peer_C2_net0 tag=20
-    - cmd: ovs-vsctl set port peer_C3_net0 tag=20
     - cmd: docker exec C0 ping -c2 192.168.10.2
-    - cmd: docker exec C2 ping -c2 192.168.20.2
+    - cmd: docker exec C1 ping -c2 192.168.20.2
 
