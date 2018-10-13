@@ -26,15 +26,13 @@ nodes:
     interfaces: [{ name: net0, type: direct, opts: SW1#swp1 }]
 
   - name: SW0
-    # image: slankdev/ovs
-    image: tmp
+    image: slankdev/ovs
     interfaces:
       - { name: swp0, type: direct, opts: C0#net0 }
       - { name: swp1, type: direct, opts: C1#net0 }
       - { name: swp2, type: direct, opts: SW1#swp2 }
   - name: SW1
-    # image: slankdev/ovs
-    image: tmp
+    image: slankdev/ovs
     interfaces:
       - { name: swp0, type: direct, opts: C2#net0 }
       - { name: swp1, type: direct, opts: C3#net0 }
