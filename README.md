@@ -36,8 +36,7 @@ $ echo export PATH=\$PATH:/usr/lib/go-1.10/bin >> ~/.bashrc
 $ echo export GOPATH=\$HOME/go >> ~/.bashrc
 $ echo export PATH=\$PATH:\$GOPATH/bin: >> ~/.bashrc
 $ source ~/.bashrc
-$ go get github.com/redhat-nfvpe/koko
-$ sudo cp $GOPATH/bin/koko /usr/local/bin
+$ go get github.com/redhat-nfvpe/koko && sudo cp $GOPATH/bin/koko /usr/local/bin
 ```
 
 install cns
