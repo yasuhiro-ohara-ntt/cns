@@ -20,7 +20,7 @@ ip utility, iproute2-ss180129
 
 preparation
 ```
-$ sudo apt install linux-image-extra-virtual  ##XXX:
+$ sudo apt install linux-image-extra-virtual  ##XXX: if cns will be running on VM
 $ sudo apt update && sudo apt install -y \
     apt-transport-https ca-certificates curl \
     software-properties-common \
