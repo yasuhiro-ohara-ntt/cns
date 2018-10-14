@@ -8,6 +8,16 @@ Quickstart is talked at [QUICKSTART.md](QUICKSTART.md).
 
 ## Setup and Usage
 
+We are tested w/ following system version.
+```
+$ cat /etc/issue
+Ubuntu 18.04.1 LTS \n \l
+$ uname -r
+4.15.0-33-generic
+$ ip -Version
+ip utility, iproute2-ss180129
+```
+
 preparation
 ```
 $ sudo apt install linux-image-extra-virtual  ##XXX:
