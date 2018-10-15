@@ -1,0 +1,50 @@
+
+# Description: Testing attach physical netif to Container
+# INIT:
+#    sudo ip link add veth0 type veth peer name veth1
+#    cns spec3.yaml init | sudo sh
+#    docker exec C0 ip addr add 10.10.10.1/24 dev veth0
+#    sudo ip link set veth1 up
+#    sudo ip addr add 10.10.10.2/24 dev veth1
+#    ping -c2 10.10.10.1
+# FINI:
+#    cns spec3.yaml fini | sudo sh
+
+nodes:
+  - name: R1
+    image: slankdev/frr
+    interfaces:
+      - { name: vnet1, type: phys }
+  - name: R2
+    image: slankdev/frr
+    interfaces:
+      - { name: vnet2, type: phys }
+  - name: R3
+    image: slankdev/frr
+    interfaces:
+      - { name: vnet3, type: phys }
+  - name: R4
+    image: slankdev/frr
+    interfaces:
+      - { name: vnet4, type: phys }
+
+node_configs:
+  - name: R1
+    cmds:
+      - cmd: ip addr add 192.85.1.2/24 dev vnet1
+  - name: R2
+    cmds:
+      - cmd: ip addr add 193.85.1.2/24 dev vnet2
+  - name: R3
+    cmds:
+      - cmd: ip addr add 194.85.1.2/24 dev vnet3
+  - name: R4
+    cmds:
+      - cmd: ip addr add 195.85.1.2/24 dev vnet4
+
+test:
+  - cmds:
+    - cmd: docker exec R1 ping -c2 192.85.1.1
+    - cmd: docker exec R2 ping -c2 193.85.1.1
+    - cmd: docker exec R3 ping -c2 194.85.1.1
+    - cmd: docker exec R4 ping -c2 195.85.1.1

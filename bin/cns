@@ -46,6 +46,18 @@ def generate_koko_physnet():
     p('  ip netns del $1                       ')
     p('}                                       ')
 
+def generate_detach_physif_from_docker():
+    p = print
+    p('detach_physif_from_docker () {          ')
+    p('  if [ $# -ne 2 ]; then                 ')
+    p('    echo "Usage: $0 <container> <netif>"')
+    p('    exit 1                              ')
+    p('  fi                                    ')
+    p('  mount_docker_netns $1 $1              ')
+    p('  ip netns exec $1 ip link set $2 netns 1')
+    p('  ip netns del $1                       ')
+    p('}                                       ')
+
 def init(data):
     print('')
     print('################')
@@ -175,6 +187,11 @@ def init(data):
 def fini(data):
     if 'nodes' in data:
         for node in data['nodes']:
+            for i in range(len(node['interfaces'])):
+                iface = node['interfaces'][i]
+                if (iface['type']=='phys'):
+                    print('detach_physif_from_docker {} {}'.format(node['name'], iface['name']))
+        for node in data['nodes']:
             print('docker stop {}'.format(node['name']))
     if 'switches' in data:
         for sw in data['switches']:
@@ -227,9 +244,13 @@ def main():
         generate_koko_physnet()
         init(data)
     elif (option == 'fini'):
+        generate_mount_docker_netns()
+        generate_detach_physif_from_docker()
         data = yaml.load(open(specfile, "r+"))
         fini(data)
     elif (option == 'reset'):
+        generate_mount_docker_netns()
+        generate_detach_physif_from_docker()
         data = yaml.load(open(specfile, "r+"))
         fini(data)
         generate_mount_docker_netns()
