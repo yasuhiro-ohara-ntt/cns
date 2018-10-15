@@ -10,6 +10,20 @@
 # FINI:
 #    cns spec3.yaml fini | sudo sh
 
+preinit:
+  - cmds:
+    - cmd: ovs-vsctl del-port ovs-dum vnet1
+    - cmd: ovs-vsctl del-port ovs-dum vnet2
+    - cmd: ovs-vsctl del-port ovs-dum vnet3
+    - cmd: ovs-vsctl del-port ovs-dum vnet4
+
+postfini:
+  - cmds:
+    - cmd: ovs-vsctl add-port ovs-dum vnet1
+    - cmd: ovs-vsctl add-port ovs-dum vnet2
+    - cmd: ovs-vsctl add-port ovs-dum vnet3
+    - cmd: ovs-vsctl add-port ovs-dum vnet4
+
 nodes:
   - name: R1
     image: slankdev/frr
