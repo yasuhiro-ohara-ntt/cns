@@ -58,29 +58,33 @@ def generate_detach_physif_from_docker():
     p('  ip netns del $1                       ')
     p('}                                       ')
 
+def preinit(data):
+    print('\n#####################')
+    print('# PRE-INIT COMMANDS #')
+    print('#####################')
+    if 'preinit' in data:
+        for node in data['preinit']:
+            for cmd in node['cmds']:
+                print('{}'.format(cmd['cmd']))
+
 def init(data):
-    print('')
-    print('################')
-    print('# CREATE NODES #')
-    print('################')
+    print('\n#####################')
+    print('# INIT COMMANDS #')
+    print('#####################')
+
+    # CREATE NODES
     if 'nodes' in data:
         for node in data['nodes']:
             print('docker run -td --hostname {} --name {} --rm --privileged {}'
                     .format(node['name'], node['name'], node['image']))
 
-    print('')
-    print('###################')
-    print('# CREATE SWITCHES #')
-    print('###################')
+    # CREATE SWITCHES
     if 'switches' in data:
         for sw in data['switches']:
             print('ovs-vsctl add-br {} && ip link set {} up'.format(sw['name'], sw['name']));
 
     links = []
-    print('')
-    print('#############################')
-    print('# CREATE Node to Node LINKS #')
-    print('#############################')
+    # CREATE Node to Node LINKS
     class n2n_link:
         left_node_name = None
         left_iface_name = None
@@ -127,10 +131,7 @@ def init(data):
             link.koko()
 
     links = []
-    print('')
-    print('###############################')
-    print('# CREATE Node to Switch LINKS #')
-    print('###############################')
+    # CREATE Node to Switch LINKS
     class s2n_link:
         node_name = None
         node_iface = None
@@ -172,10 +173,7 @@ def init(data):
             link.check()
             link.koko()
 
-    print('')
-    print('#################################')
-    print('# Attach PhysNetIf to Conitaner #')
-    print('#################################')
+    # Attach PhysNetIf to Conitaner
     if 'nodes' in data:
         for node in data['nodes']:
             for i in range(len(node['interfaces'])):
@@ -185,6 +183,9 @@ def init(data):
 
 
 def fini(data):
+    print('\n################')
+    print('# FINI Commands  #')
+    print('################')
     if 'nodes' in data:
         for node in data['nodes']:
             for i in range(len(node['interfaces'])):
@@ -196,6 +197,15 @@ def fini(data):
     if 'switches' in data:
         for sw in data['switches']:
             print('ovs-vsctl del-br {}'.format(sw['name']));
+
+def postfini(data):
+    print('\n#####################')
+    print('# POST-FINI COMMANDS #')
+    print('#####################')
+    if 'postfini' in data:
+        for node in data['postfini']:
+            for cmd in node['cmds']:
+                print('{}'.format(cmd['cmd']))
 
 def config(data):
     print('\n################')
@@ -242,17 +252,20 @@ def main():
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
+        preinit(data)
         init(data)
     elif (option == 'fini'):
         generate_mount_docker_netns()
         generate_detach_physif_from_docker()
         data = yaml.load(open(specfile, "r+"))
         fini(data)
+        postfini(data)
     elif (option == 'reset'):
         generate_mount_docker_netns()
         generate_detach_physif_from_docker()
         data = yaml.load(open(specfile, "r+"))
         fini(data)
+        postfini(data)
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
