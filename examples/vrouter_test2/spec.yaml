@@ -55,12 +55,12 @@ nodes:
     image: slankdev/frr
     interfaces:
       - { name: net0, type: direct, opts: R1#net1 }
-      - { name: vnet1, type: physnet }
+      - { name: vnet1, type: phys }
   - name: R3
     image: slankdev/frr
     interfaces:
       - { name: net0, type: direct, opts: R1#net2 }
-      - { name: vnet2, type: physnet }
+      - { name: vnet2, type: phys }
   - name: C1
     image: slankdev/ubuntu:18.04
     interfaces:
@@ -68,8 +68,7 @@ nodes:
   - name: C2
     image: slankdev/ubuntu:18.04
     interfaces:
-      - { name: vnet3, type: physnet }
-  - name: C1
+      - { name: vnet3, type: phys }
 
 node_configs:
 
