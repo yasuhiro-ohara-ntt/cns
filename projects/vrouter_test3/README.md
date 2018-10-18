@@ -1,7 +1,7 @@
 
-help:
-	@echo help (tbd)
+# Usage
 
+```
 init:
 	cns -f spec.yaml init | sudo sh
 	cns -f dut.yaml init | sudo sh
@@ -14,4 +14,5 @@ fini:
 conf:
 	cns -f spec.yaml conf | sudo sh
 	cns -f dut.yaml conf | sudo sh
+```
 
