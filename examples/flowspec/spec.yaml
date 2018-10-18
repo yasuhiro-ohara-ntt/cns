@@ -39,11 +39,11 @@ nodes:
       - { name: net0, type: direct, opts: R0#net2 }
       - { name: net1, type: direct, opts: R1#net2 }
   - name: C0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, opts: R0#net1 }
   - name: C1
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, opts: R1#net1 }
 
