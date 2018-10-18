@@ -34,15 +34,23 @@
 
 preinit:
   - cmds:
-    # - cmd: ovs-vsctl del-port ovs-dum vnet1
-    # - cmd: ovs-vsctl del-port ovs-dum vnet2
-    # - cmd: ovs-vsctl del-port ovs-dum vnet3
+    - cmd: ovs-vsctl add-br ovs0
+
+postinit:
+  - cmds:
+    - cmd: ovs-vsctl add-port ovs0 R2net1
+    - cmd: ovs-vsctl add-port ovs0 R3net1
+    - cmd: ovs-vsctl add-port ovs0 C2net0
+
+    - cmd: ovs-vsctl set port R2net1 tag=60
+    - cmd: ovs-vsctl set port R3net1 tag=70
+    - cmd: ovs-vsctl set port C2net0 tag=80
 
 postfini:
   - cmds:
-    # - cmd: ovs-vsctl add-port ovs-dum vnet1
-    # - cmd: ovs-vsctl add-port ovs-dum vnet2
-    # - cmd: ovs-vsctl add-port ovs-dum vnet3
+    - cmd: ovs-vsctl del-port ovs0 R2net1
+    - cmd: ovs-vsctl del-port ovs0 R3net1
+    - cmd: ovs-vsctl del-port ovs0 C2net0
 
 nodes:
   - name: R1
@@ -55,12 +63,12 @@ nodes:
     image: slankdev/frr
     interfaces:
       - { name: net0, type: direct, opts: R1#net1 }
-      - { name: net1, type: bridge, opts: B0 }
+      - { name: net1, type: veth, opts: R2net1 }
   - name: R3
     image: slankdev/frr
     interfaces:
       - { name: net0, type: direct, opts: R1#net2 }
-      - { name: net1, type: bridge, opts: B0 }
+      - { name: net1, type: veth, opts: R3net1 }
   - name: C1
     image: slankdev/ubuntu:18.04
     interfaces:
@@ -68,17 +76,9 @@ nodes:
   - name: C2
     image: slankdev/ubuntu:18.04
     interfaces:
-      - { name: net0, type: bridge, opts: B0 }
-
-switches:
-  - name: B0
-    interfaces:
-      - { name: net1, type: container, opts: R2 }
-      - { name: net1, type: container, opts: R3 }
-      - { name: net0, type: container, opts: C2 }
+      - { name: net0, type: veth, opts: C2net0 }
 
 node_configs:
-
   - name: R1
     cmds:
       - cmd: echo R1 config
@@ -123,7 +123,7 @@ node_configs:
           -c 'interface net0'
           -c '  ip address 10.0.0.2/24'
           -c 'exit'
-          -c 'interface vnet1'
+          -c 'interface net1'
           -c '  ip address 10.2.0.1/24'
           -c 'exit'
           -c 'router ospf'
@@ -152,7 +152,7 @@ node_configs:
           -c 'interface net0'
           -c '  ip address 10.1.0.2/24'
           -c 'exit'
-          -c 'interface vnet2'
+          -c 'interface net1'
           -c '  ip address 10.3.0.1/24'
           -c 'exit'
           -c 'router ospf'
@@ -179,7 +179,7 @@ node_configs:
   - name: C2
     cmds:
       - cmd: echo C2 config
-      - cmd: ip addr add 192.168.20.2/24 dev vnet3
+      - cmd: ip addr add 192.168.20.2/24 dev net0
       - cmd: ip route del default
       - cmd: ip route add default via 192.168.20.1
 

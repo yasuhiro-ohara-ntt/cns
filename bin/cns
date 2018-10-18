@@ -67,6 +67,15 @@ def preinit(data):
             for cmd in node['cmds']:
                 print('{}'.format(cmd['cmd']))
 
+def postinit(data):
+    print('\n#####################')
+    print('# POST-INIT COMMANDS #')
+    print('#####################')
+    if 'postinit' in data:
+        for node in data['postinit']:
+            for cmd in node['cmds']:
+                print('{}'.format(cmd['cmd']))
+
 def init(data):
     print('\n#####################')
     print('# INIT COMMANDS #')
@@ -181,6 +190,16 @@ def init(data):
                 if (iface['type']=='phys'):
                     print('koko_physnet {} {}'.format(node['name'], iface['name']))
 
+    # Attach raw veth to Conitaner
+    if 'nodes' in data:
+        for node in data['nodes']:
+            for i in range(len(node['interfaces'])):
+                iface = node['interfaces'][i]
+                if (iface['type']=='veth'):
+                    print('ip link add {} type veth peer name {}'.format(
+                        iface['name'], iface['opts']))
+                    print('koko_physnet {} {}'.format(node['name'], iface['name']))
+                    print('ip link set {} up'.format(iface['opts']))
 
 def fini(data):
     print('\n################')
@@ -259,6 +278,7 @@ def main():
         generate_koko_physnet()
         preinit(data)
         init(data)
+        postinit(data)
     elif (option == 'fini'):
         generate_mount_docker_netns()
         generate_detach_physif_from_docker()
@@ -274,7 +294,9 @@ def main():
         generate_mount_docker_netns()
         generate_kokobr()
         generate_koko_physnet()
+        preinit(data)
         init(data)
+        postinit(data)
     elif (option == 'conf'):
         data = yaml.load(open(specfile, "r+"))
         config(data)
