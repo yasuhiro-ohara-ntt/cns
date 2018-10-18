@@ -221,9 +221,14 @@ def test(data):
     print('# INTEGRATION TEST  #')
     print('#####################')
     if 'test' in data:
+        print('set -eu')
         for node in data['test']:
             for cmd in node['cmds']:
-                print('{}'.format(cmd['cmd']))
+                cmd_str = cmd['cmd']
+                print('echo -n execute [{}]...'.format(cmd_str))
+                print('{} >> /dev/null'.format(cmd_str))
+                print('echo done')
+        print('echo')
 
 def main():
 
