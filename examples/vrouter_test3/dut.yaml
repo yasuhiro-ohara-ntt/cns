@@ -1,9 +1,5 @@
 
 
-preinit:
-  - cmds:
-    - cmd: ovs-vsctl add-br ovs0
-
 postinit:
   - cmds:
     - cmd: ovs-vsctl add-port ovs0 pp6
