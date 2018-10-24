@@ -66,18 +66,20 @@ node_configs:
       - cmd: >-
             iptables -t nat -A POSTROUTING
             -s 192.168.0.0/24 -j MASQUERADE
-      - cmd: echo "global_defs {            " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    state MASTER         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    interface net1       " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    priority 200         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    }                    " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+      - cmd: mkdir -p /etc/keepalived/
+      - cmd: bash -c 'echo "global_defs {            " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "}                        " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    state MASTER         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    interface net1       " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    priority 200         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    }                    " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "}                        " >> /etc/keepalived/keepalived.conf'
+      - cmd: keepalived
 
   - name: R1
     cmds:
@@ -89,18 +91,20 @@ node_configs:
       - cmd: >-
             iptables -t nat -A POSTROUTING
             -s 192.168.0.0/24 -j MASQUERADE
-      - cmd: echo "global_defs {            " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    state MASTER         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    interface net1       " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    priority 100         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "    }                    " >> /etc/keepalived/keepalived.conf
-      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+      - cmd: mkdir -p /etc/keepalived/
+      - cmd: bash -c 'echo "global_defs {            " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "}                        " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    state MASTER         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    interface net1       " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    priority 100         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "    }                    " >> /etc/keepalived/keepalived.conf'
+      - cmd: bash -c 'echo "}                        " >> /etc/keepalived/keepalived.conf'
+      - cmd: keepalived
 
   - name: S0
     cmds:
