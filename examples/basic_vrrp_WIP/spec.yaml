@@ -1,15 +1,64 @@
 
+# DESCRIPTION: Keepalived test
 #
 # TOPO:
-#                .2   .2
-#  10.0.0.0/24 +----S0-----+ 10.1.0.0/24
-#            .1|           |.2
-#             R0           R1
-#           .10|           |.11
-#              +----B0-----+
-#                    | 192.168.0.0/24
-#                .100|
-#                   C1
 #
+#              .2[net0]   [net1].2
+#  10.0.0.0/24     +----S0-----+      10.1.0.0/24
+#                .1|           |.2
+#               [net0]       [net0]
+#              +------+     +------+
+#              |  R0  |     |  R1  |
+#              +------+     +------+
+#               [net1]       [net1]
+#               .10|           |.11
+#                  +----B0-----+
+#                        | 192.168.0.0/24
+#                    .100|
+#                     [net0]
+#                    +------+
+#                    |  C0  |
+#                    +------+
 #
-#
+
+nodes:
+  - name: R0
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: S0#net0 }
+      - { name: net1, type: bridge, opts: B0 }
+  - name: R1
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: S0#net1 }
+      - { name: net1, type: bridge, opts: B0 }
+  - name: S0
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R0#net0 }
+      - { name: net1, type: direct, opts: R1#net0 }
+  - name: C0
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: bridge, opts: B0 }
+
+switches:
+  - name: B0
+    interfaces:
+      - { type: container, opts: R0, name: net1 }
+      - { type: container, opts: R1, name: net1 }
+      - { type: container, opts: C0, name: net0 }
+
+node_configs:
+  - name: R0
+    cmds:
+      - cmd: echo R0 config
+  - name: R1
+    cmds:
+      - cmd: echo R1 config
+  - name: S0
+    cmds:
+      - cmd: echo S0 config
+  - name: C0
+    cmds:
+      - cmd: echo C0 config
