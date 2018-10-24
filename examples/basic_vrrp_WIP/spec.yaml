@@ -27,12 +27,14 @@
 
 nodes:
   - name: R0
-    image: slankdev/frr
+    # image: slankdev/frr
+    image: tmp
     interfaces:
       - { name: net0, type: direct, opts: S0#net0 }
       - { name: net1, type: bridge, opts: B0 }
   - name: R1
-    image: slankdev/frr
+    # image: slankdev/frr
+    image: tmp
     interfaces:
       - { name: net0, type: direct, opts: S0#net1 }
       - { name: net1, type: bridge, opts: B0 }
@@ -64,6 +66,19 @@ node_configs:
       - cmd: >-
             iptables -t nat -A POSTROUTING
             -s 192.168.0.0/24 -j MASQUERADE
+      - cmd: echo "global_defs {            " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    state MASTER         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    interface net1       " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    priority 200         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    }                    " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+
   - name: R1
     cmds:
       - cmd: echo R1 config
@@ -74,6 +89,19 @@ node_configs:
       - cmd: >-
             iptables -t nat -A POSTROUTING
             -s 192.168.0.0/24 -j MASQUERADE
+      - cmd: echo "global_defs {            " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "vrrp_instance VI_1 {     " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    state MASTER         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    interface net1       " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    virtual_router_id 51 " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    priority 100         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    advert_int 1         " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    virtual_ipaddress {  " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "        192.168.0.1/24   " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "    }                    " >> /etc/keepalived/keepalived.conf
+      - cmd: echo "}                        " >> /etc/keepalived/keepalived.conf
+
   - name: S0
     cmds:
       - cmd: echo S0 config
@@ -85,7 +113,7 @@ node_configs:
       - cmd: echo C0 config
       - cmd: ip addr add 192.168.0.100/24 dev net0
       - cmd: ip route del default
-      - cmd: ip route add default via 192.168.0.10
+      - cmd: ip route add default via 192.168.0.1
 
 test:
   - cmds:
