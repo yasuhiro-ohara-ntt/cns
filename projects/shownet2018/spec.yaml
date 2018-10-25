@@ -88,6 +88,17 @@ node_configs:
           -c '  network 45.0.1.4/30 area 0'
           -c '  network 45.0.1.8/30 area 0'
           -c 'exit'
+          -c 'router bgp 38639'
+          -c '  bgp router-id 45.0.0.2'
+          -c '  neighbor 45.0.0.4 remote-as 38639'
+          -c '  neighbor 45.0.0.4 update-source lo'
+          -c '  neighbor 45.0.0.5 remote-as 38639'
+          -c '  neighbor 45.0.0.5 update-source lo'
+          -c '  neighbor 45.0.0.6 remote-as 38639'
+          -c '  neighbor 45.0.0.6 update-source lo'
+          -c '  neighbor 10.10.10.10 remote-as 10'
+          -c '  network 192.168.0.0/24'
+          -c 'exit'
 
   - name: R4
     cmds:
@@ -110,6 +121,17 @@ node_configs:
           -c '  network 45.0.0.4/32 area 0'
           -c '  network 45.0.1.20/30 area 0'
           -c '  network 45.0.1.24/30 area 0'
+          -c 'exit'
+          -c 'router bgp 38639'
+          -c '  bgp router-id 45.0.0.4'
+          -c '  neighbor 45.0.0.2 remote-as 38639'
+          -c '  neighbor 45.0.0.2 update-source lo'
+          -c '  neighbor 45.0.0.5 remote-as 38639'
+          -c '  neighbor 45.0.0.5 update-source lo'
+          -c '  neighbor 45.0.0.6 remote-as 38639'
+          -c '  neighbor 45.0.0.6 update-source lo'
+          -c '  neighbor 20.20.20.20 remote-as 20'
+          -c '  network 192.168.0.0/24'
           -c 'exit'
 
   - name: R5
@@ -139,6 +161,15 @@ node_configs:
           -c '  network 45.0.1.28/30 area 0'
           -c '  network 192.168.0.0/24 area 0'
           -c 'exit'
+          -c 'router bgp 38639'
+          -c '  bgp router-id 45.0.0.4'
+          -c '  neighbor 45.0.0.2 remote-as 38639'
+          -c '  neighbor 45.0.0.2 update-source lo'
+          -c '  neighbor 45.0.0.4 remote-as 38639'
+          -c '  neighbor 45.0.0.4 update-source lo'
+          -c '  neighbor 45.0.0.6 remote-as 38639'
+          -c '  neighbor 45.0.0.6 update-source lo'
+          -c 'exit'
 
   - name: R6
     cmds:
@@ -167,6 +198,15 @@ node_configs:
           -c '  network 45.0.1.28/30 area 0'
           -c '  network 192.168.0.0/24 area 0'
           -c 'exit'
+          -c 'router bgp 38639'
+          -c '  bgp router-id 45.0.0.4'
+          -c '  neighbor 45.0.0.2 remote-as 38639'
+          -c '  neighbor 45.0.0.2 update-source lo'
+          -c '  neighbor 45.0.0.4 remote-as 38639'
+          -c '  neighbor 45.0.0.4 update-source lo'
+          -c '  neighbor 45.0.0.5 remote-as 38639'
+          -c '  neighbor 45.0.0.5 update-source lo'
+          -c 'exit'
 
   - name: C0
     cmds:
@@ -194,6 +234,7 @@ node_configs:
           -c 'router bgp 10'
           -c '  bgp router-id 1.1.1.1'
           -c '  neighbor 10.0.0.2 remote-as 30'
+          -c '  neighbor 10.10.10.11 remote-as 38639'
           -c 'exit'
 
   - name: AS20
@@ -214,6 +255,7 @@ node_configs:
           -c 'router bgp 20'
           -c '  bgp router-id 2.2.2.2'
           -c '  neighbor 10.0.1.2 remote-as 30'
+          -c '  neighbor 20.20.20.21 remote-as 38639'
           -c 'exit'
 
   - name: AS30
@@ -237,5 +279,6 @@ node_configs:
           -c '  neighbor 10.0.1.1 remote-as 20'
           -c '  network 8.8.8.8/32'
           -c 'exit'
+          -c 'ip route 0.0.0.0 10.0.0.1'
 
 
