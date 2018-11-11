@@ -58,6 +58,40 @@ def generate_detach_physif_from_docker():
     p('  ip netns del $1                       ')
     p('}                                       ')
 
+def tpl():
+    p = print
+    p('nodes:                                             ')
+    p('  - name: C0                                       ')
+    p('    image: slankdev/ubuntu:16.04                   ')
+    p('    interfaces:                                    ')
+    p('      - { name: net0, type: direct, opts: C1#net0 }')
+    p('  - name: C0                                       ')
+    p('    image: slankdev/ubuntu:16.04                   ')
+    p('    interfaces:                                    ')
+    p('      - { name: net0, type: direct, opts: C0#net0 }')
+    p('                                                   ')
+    p('switches:                                          ')
+    p('  - name: B0                                       ')
+    p('    interfaces:                                    ')
+    p('      - { name: net0, type: container, opts: C0 }  ')
+    p('                                                   ')
+    p('node_configs:                                      ')
+    p('  - name: C0                                       ')
+    p('    cmds:                                          ')
+    p('      - cmd: ip link set dev net0 up               ')
+    p('      - cmd: >-                                    ')
+    p('          vtysh -c "conf t"                        ')
+    p('          -c "router bgp 100                  "    ')
+    p('          -c "  bgp router-id 2.2.2.2         "    ')
+    p('                                                   ')
+    p('  - name: C0                                       ')
+    p('    cmds:                                          ')
+    p('      - cmd: echo slankdev slankdev                ')
+    p('test:                                              ')
+    p('  - cmds:                                          ')
+    p('    - cmd: docker exec C0 ping -c2 10.0.0.2        ')
+
+
 def preinit(data):
     print('\n#####################')
     print('# PRE-INIT COMMANDS #')
@@ -232,8 +266,10 @@ def config(data):
     print('################')
     if 'node_configs' in data:
         for node in data['node_configs']:
+            print('echo {}::[config]::start'.format(node['name']))
             for cmd in node['cmds']:
                 print('docker exec {} {}'.format(node['name'], cmd['cmd']))
+            print('echo {}::[config]::fin'.format(node['name']))
 
 def test(data):
     print('\n#####################')
@@ -254,14 +290,15 @@ def main():
     parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('option',
-            choices=['func', 'init', 'fini', 'reset', 'conf', 'test', 'reconf'],
+            choices=['func', 'init', 'fini', 'reset', 'conf', 'test', 'reconf', 'tpl'],
             help='func       just generate helper funcs \n'
                  'init       generate setup script \n'
                  'fini       generate destroy script \n'
                  'test       generate test script \n'
                  'conf       generate configuration script \n'
                  'reset      generate destroy and setup script \n'
-                 'reconf     generate destroy, setup and config script \n')
+                 'reconf     generate destroy, setup and config script \n'
+                 'tpl        generate template yaml file \n')
     parser.add_argument('-f', '--specfile', default='spec.yaml')
     args = parser.parse_args()
     specfile = args.specfile
@@ -317,6 +354,9 @@ def main():
     elif (option == 'test'):
         data = yaml.load(open(specfile, "r+"))
         test(data)
+    elif (option == 'tpl'):
+        print('# http://www.asciiflow.com')
+        tpl()
     else:
         parser.print_help()
 
