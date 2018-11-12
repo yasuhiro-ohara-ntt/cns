@@ -89,6 +89,7 @@ node_configs:
       - cmd: ip addr add 10.3.0.2/24 dev net0
       - cmd: ip addr add 192.168.0.1/24 dev net1
       - cmd: ip route add 192.168.1.0/24 via 10.3.0.1
+      - cmd: ip route add 192.168.1.20/32 encap mpls 100 via inet 10.3.0.1
   - name: R1
     cmds:
       - cmd: sysctl -w net.ipv4.ip_forward=1 > /dev/null
@@ -99,6 +100,7 @@ node_configs:
       - cmd: ip addr add 10.4.0.2/24 dev net0
       - cmd: ip addr add 192.168.1.1/24 dev net1
       - cmd: ip route add 192.168.0.0/24 via 10.4.0.1
+      - cmd: ip route add 192.168.0.20/32 encap mpls 200 via inet 10.4.0.1
   - name: R2
     cmds:
       - cmd: sysctl -w net.ipv4.ip_forward=1 > /dev/null
@@ -112,8 +114,7 @@ node_configs:
       - cmd: ip addr add 10.1.0.1/24 dev net2
       - cmd: ip route add 192.168.0.0/24 via 10.3.0.2
       - cmd: ip route add 192.168.1.0/24 via 10.0.1.2
-      # - cmd: ip route add 192.168.1.0/24 via 10.255.0.2
-      # - cmd: ip -f mpls route add 100 via inet 10.0.0.2
+      - cmd: ip -f mpls route add 100 via inet 10.1.0.2
   - name: R3
     cmds:
       - cmd: sysctl -w net.ipv4.ip_forward=1 > /dev/null
@@ -127,9 +128,7 @@ node_configs:
       - cmd: ip addr add 10.2.0.1/24 dev net2
       - cmd: ip route add 192.168.0.0/24 via 10.0.2.2
       - cmd: ip route add 192.168.1.0/24 via 10.4.0.2
-      # - cmd: ip route add 192.168.0.0/24 via 10.255.0.1
-      # - cmd: ip -f mpls route add 100 via inet 10.1.0.2
-      # - cmd: ip route add 192.168.1.20/32 encap mpls 100 via inet 192.168.0.1
+      - cmd: ip -f mpls route add 200 via inet 10.2.0.2
   - name: R4
     cmds:
       - cmd: sysctl -w net.ipv4.ip_forward=1 > /dev/null
