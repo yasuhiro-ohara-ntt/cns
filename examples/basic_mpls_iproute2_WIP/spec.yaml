@@ -13,11 +13,20 @@
 # .0.0/24  +.1                  +.1                 .1+                  .1+  .1.0/24
 #         net1                 net2                 net2                 net1
 #       +------+             +------+             +------+             +------+
-#       |      |.2         .1|      |.1         .2|      |.1         .2|      |
-#       |  R0  |net0+---+net1|  R2  |net0+---+net0|  R3  |net1+---+net0|  R1  |
-#       |      |    10.3.    |      |   10.0      |      |    10.4.    |      |
-#       +------+    0.0/24   +------+   .0.0/24   +------+    0.0/24   +------+
-
+#       |      |.2         .1|      |             |      |.1         .2|      |
+#       |  R0  |net0+---+net1|  R2  |             |  R3  |net1+---+net0|  R1  |
+#       |      |    10.3.    |      |             |      |    10.4.    |      |
+#       +------+    0.0/24   +------+             +------+    0.0/24   +------+
+#                              net0                 net0
+#                               +.1                 .1+
+#                               |                     |
+#                               |                     |
+#                               |                     |
+#                         10.0. |       +------+      |10.0.
+#                         1.0/24|     .2|      |.2    |2.0/24
+#                               +--+net0|  R5  |net1+-+
+#                                       |      |
+#                                       +------+
 
 
 pre_init:
@@ -40,13 +49,13 @@ nodes:
   - name: R2
     image: slankdev/frr
     interfaces:
-      - { name: net0, type: direct, opts: R3#net0 }
+      - { name: net0, type: direct, opts: R5#net0 }
       - { name: net1, type: direct, opts: R0#net0 }
       - { name: net2, type: direct, opts: R4#net0 }
   - name: R3
     image: slankdev/frr
     interfaces:
-      - { name: net0, type: direct, opts: R2#net0 }
+      - { name: net0, type: direct, opts: R5#net1 }
       - { name: net1, type: direct, opts: R1#net0 }
       - { name: net2, type: direct, opts: R4#net1 }
   - name: R4
@@ -54,6 +63,11 @@ nodes:
     interfaces:
       - { name: net0, type: direct, opts: R2#net2 }
       - { name: net1, type: direct, opts: R3#net2 }
+  - name: R5
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R2#net0 }
+      - { name: net1, type: direct, opts: R3#net0 }
   - name: C0
     image: slankdev/ubuntu:18.04
     interfaces:
@@ -93,11 +107,11 @@ node_configs:
       - cmd: sysctl -w net.mpls.conf.net1.input=1 > /dev/null
       - cmd: sysctl -w net.mpls.conf.net2.input=1 > /dev/null
       - cmd: sysctl -w net.mpls.platform_labels=1024 > /dev/null
-      - cmd: ip addr add 10.0.0.1/24 dev net0
+      - cmd: ip addr add 10.0.1.1/24 dev net0
       - cmd: ip addr add 10.3.0.1/24 dev net1
       - cmd: ip addr add 10.1.0.1/24 dev net2
       - cmd: ip route add 192.168.0.0/24 via 10.3.0.2
-      - cmd: ip route add 192.168.1.0/24 via 10.0.0.2
+      - cmd: ip route add 192.168.1.0/24 via 10.0.1.2
       # - cmd: ip route add 192.168.1.0/24 via 10.255.0.2
       # - cmd: ip -f mpls route add 100 via inet 10.0.0.2
   - name: R3
@@ -108,10 +122,10 @@ node_configs:
       - cmd: sysctl -w net.mpls.conf.net1.input=1 > /dev/null
       - cmd: sysctl -w net.mpls.conf.net2.input=1 > /dev/null
       - cmd: sysctl -w net.mpls.platform_labels=1024 > /dev/null
-      - cmd: ip addr add 10.0.0.2/24 dev net0
+      - cmd: ip addr add 10.0.2.1/24 dev net0
       - cmd: ip addr add 10.4.0.1/24 dev net1
       - cmd: ip addr add 10.2.0.1/24 dev net2
-      - cmd: ip route add 192.168.0.0/24 via 10.0.0.1
+      - cmd: ip route add 192.168.0.0/24 via 10.0.2.2
       - cmd: ip route add 192.168.1.0/24 via 10.4.0.2
       # - cmd: ip route add 192.168.0.0/24 via 10.255.0.1
       # - cmd: ip -f mpls route add 100 via inet 10.1.0.2
@@ -127,6 +141,17 @@ node_configs:
       - cmd: ip addr add 10.2.0.2/24 dev net1
       - cmd: ip route add 192.168.0.0/24 via 10.1.0.1
       - cmd: ip route add 192.168.1.0/24 via 10.2.0.1
+  - name: R5
+    cmds:
+      - cmd: sysctl -w net.ipv4.ip_forward=1 > /dev/null
+      - cmd: sysctl -w net.mpls.conf.lo.input=1 > /dev/null
+      - cmd: sysctl -w net.mpls.conf.net0.input=1 > /dev/null
+      - cmd: sysctl -w net.mpls.conf.net1.input=1 > /dev/null
+      - cmd: sysctl -w net.mpls.platform_labels=1024 > /dev/null
+      - cmd: ip addr add 10.0.1.2/24 dev net0
+      - cmd: ip addr add 10.0.2.2/24 dev net1
+      - cmd: ip route add 192.168.0.0/24 via 10.0.1.1
+      - cmd: ip route add 192.168.1.0/24 via 10.0.2.1
   - name: C0
     cmds:
       - cmd: ip addr add 192.168.0.2/24 dev net0
