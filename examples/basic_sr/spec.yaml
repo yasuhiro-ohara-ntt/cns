@@ -1,0 +1,31 @@
+# http://www.asciiflow.com
+nodes:
+  - name: C0
+    image: slankdev/ubuntu:16.04
+    interfaces:
+      - { name: net0, type: direct, opts: C1#net0 }
+  - name: C0
+    image: slankdev/ubuntu:16.04
+    interfaces:
+      - { name: net0, type: direct, opts: C0#net0 }
+
+switches:
+  - name: B0
+    interfaces:
+      - { name: net0, type: container, opts: C0 }
+
+node_configs:
+  - name: C0
+    cmds:
+      - cmd: ip link set dev net0 up
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router bgp 100                  "
+          -c "  bgp router-id 2.2.2.2         "
+
+  - name: C0
+    cmds:
+      - cmd: echo slankdev slankdev
+test:
+  - cmds:
+    - cmd: docker exec C0 ping -c2 10.0.0.2
