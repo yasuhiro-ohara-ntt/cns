@@ -271,6 +271,14 @@ def config(data):
                 print('docker exec {} {}'.format(node['name'], cmd['cmd']))
             print('echo {}::[config]::fin'.format(node['name']))
 
+def pull(data):
+    print('\n######################')
+    print('# PULL DOCKER IMAGES #')
+    print('######################')
+    if 'nodes' in data:
+        for node in data['nodes']:
+            print('docker pull {}'.format(node['image']))
+
 def test(data):
     print('\n#####################')
     print('# INTEGRATION TEST  #')
@@ -290,7 +298,7 @@ def main():
     parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('option',
-            choices=['func', 'init', 'fini', 'reset', 'conf', 'test', 'reconf', 'tpl'],
+            choices=['func', 'init', 'fini', 'reset', 'conf', 'test', 'reconf', 'tpl', 'pull'],
             help='func       just generate helper funcs \n'
                  'init       generate setup script \n'
                  'fini       generate destroy script \n'
@@ -298,7 +306,9 @@ def main():
                  'conf       generate configuration script \n'
                  'reset      generate destroy and setup script \n'
                  'reconf     generate destroy, setup and config script \n'
-                 'tpl        generate template yaml file \n')
+                 'tpl        generate template yaml file \n'
+                 'pull       generate docker image pulling script \n'
+                 )
     parser.add_argument('-f', '--specfile', default='spec.yaml')
     args = parser.parse_args()
     specfile = args.specfile
@@ -351,6 +361,9 @@ def main():
     elif (option == 'conf'):
         data = yaml.load(open(specfile, "r+"))
         config(data)
+    elif (option == 'pull'):
+        data = yaml.load(open(specfile, "r+"))
+        pull(data)
     elif (option == 'test'):
         data = yaml.load(open(specfile, "r+"))
         test(data)
