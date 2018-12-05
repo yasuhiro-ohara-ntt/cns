@@ -154,6 +154,10 @@ def init(data):
                 self.left_node_name,
                 self.right_iface_name,
                 self.right_node_name))
+            print('ip netns exec {} ip link set {} up'.format(
+                self.left_node_name, self.left_iface_name))
+            print('ip netns exec {} ip link set {} up'.format(
+                self.right_node_name, self.right_iface_name))
             print('ip netns del {}'.format(self.left_node_name))
             print('ip netns del {}'.format(self.right_node_name))
         def check(self):
