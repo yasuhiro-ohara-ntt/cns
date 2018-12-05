@@ -142,9 +142,20 @@ def init(data):
             self.right_iface_name = rn_iface
             self.left_isset = True
         def koko(self):
-            print('koko -d {},{} -d {},{}'.format(
-                self.left_node_name, self.left_iface_name,
-                self.right_node_name, self.right_iface_name))
+            # EXAMPLE:
+            #    sudo ip link add net0 netns C0 type veth \
+            #        peer name net0 netns C1
+            print('mount_docker_netns {} {}'.format(
+                self.left_node_name, self.left_node_name))
+            print('mount_docker_netns {} {}'.format(
+                self.right_node_name, self.right_node_name))
+            print('ip link add {} netns {} type veth peer name {} netns {}'.format(
+                self.left_iface_name,
+                self.left_node_name,
+                self.right_iface_name,
+                self.right_node_name))
+            print('ip netns del {}'.format(self.left_node_name))
+            print('ip netns del {}'.format(self.right_node_name))
         def check(self):
             if not (self.right_isset and self.left_isset):
                 Exception('n2n_link state is not correct')

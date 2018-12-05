@@ -21,22 +21,7 @@ ip utility, iproute2-ss180129
 preparation
 ```
 $ sudo apt install linux-image-extra-virtual  ##XXX: if cns will be running on VM
-$ sudo apt update && sudo apt install -y \
-    apt-transport-https ca-certificates curl \
-    software-properties-common \
-		openvswitch-switch
-$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-$ sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) stable"
-$ sudo apt update && sudo apt install -y docker-ce
 $ sudo usermod -aG docker $USER
-$ sudo apt update && sudo apt install gcc make golang-1.10
-$ echo export PATH=\$PATH:/usr/lib/go-1.10/bin >> ~/.bashrc
-$ echo export GOPATH=\$HOME/go >> ~/.bashrc
-$ echo export PATH=\$PATH:\$GOPATH/bin: >> ~/.bashrc
-$ source ~/.bashrc
-$ go get github.com/redhat-nfvpe/koko && sudo cp $GOPATH/bin/koko /usr/local/bin
 ```
 
 install cns
