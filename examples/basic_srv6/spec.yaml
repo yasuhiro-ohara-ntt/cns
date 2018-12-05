@@ -44,11 +44,62 @@ switches:
     - { name: net0, type: container, opts: R4 }
 
 node_configs:
-  - name: C0
+  - name: S0
     cmds:
-      - cmd: ip link set dev net0 up
-      - cmd: >-
-          vtysh -c "conf t"
-          -c "router bgp 100                  "
-          -c "  bgp router-id 2.2.2.2         "
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:a::2/64 dev net0
+  - name: S1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:c::2/64 dev net0
+  - name: R0
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:12::2/64 dev net0
+      - cmd: ip -6 addr add fc00:a::1/64 dev net1
+  - name: R1
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:12::1/64 dev net0
+      - cmd: ip -6 addr add fc00:23::1/64 dev net1
+      - cmd: ip -6 addr add fc00:b::1/64 dev net2
+  - name: R2
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:23::2/64 dev net0
+      - cmd: ip -6 addr add fc00:c::1/64 dev net1
+  - name: R3
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:b::10/64 dev net0
+  - name: R4
+    cmds:
+      - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
+      - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
+      - cmd: ip -6 addr add fc00:b::20/64 dev net0
+
+test:
+  - cmds:
+    # Basic P2P-Link's Test
+    - cmd: docker exec S0 ping6 -c2 fc00:a::1
+    - cmd: docker exec S1 ping6 -c2 fc00:c::1
+    - cmd: docker exec R0 ping6 -c2 fc00:a::2
+    - cmd: docker exec R0 ping6 -c2 fc00:12::1
+    - cmd: docker exec R1 ping6 -c2 fc00:12::2
+    - cmd: docker exec R1 ping6 -c2 fc00:23::2
+    - cmd: docker exec R1 ping6 -c2 fc00:b::10
+    - cmd: docker exec R1 ping6 -c2 fc00:b::20
+    - cmd: docker exec R2 ping6 -c2 fc00:c::2
+    - cmd: docker exec R2 ping6 -c2 fc00:23::1
+    - cmd: docker exec R3 ping6 -c2 fc00:b::1
+    - cmd: docker exec R3 ping6 -c2 fc00:b::20
+    - cmd: docker exec R4 ping6 -c2 fc00:b::1
+    - cmd: docker exec R4 ping6 -c2 fc00:b::10
+
 
