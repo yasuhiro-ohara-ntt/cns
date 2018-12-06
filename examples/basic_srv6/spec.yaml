@@ -80,7 +80,9 @@ node_configs:
       - cmd: ip -6 route add fc00:b::/64 via fc00:12::1
       - cmd: ip -6 route add fc00:c::/64 via fc00:12::1
       # SRv6 operation
-      - cmd: ip -6 r replace fc00:c::/64 encap seg6 mode encap segs fc00:b::10,fc00:b::20,fc00:23::2 dev net1
+      - cmd: >-
+          ip -6 r replace fc00:c::/64 encap seg6
+          mode encap segs fc00:b::10,fc00:b::20,fc00:23::2 dev net1
 
   - name: R1
     cmds:
@@ -110,7 +112,9 @@ node_configs:
       - cmd: ip -6 route add fc00:a::/64 via fc00:23::1
       - cmd: ip -6 route add fc00:b::/64 via fc00:23::1
       # SRv6 operation
-      - cmd: ip -6 r replace fc00:a::/64 encap seg6 mode encap segs fc00:b::20,fc00:b::10,fc00:12::2 dev net1
+      - cmd: >-
+          ip -6 r replace fc00:a::/64 encap seg6
+          mode encap segs fc00:b::20,fc00:b::10,fc00:12::2 dev net1
   - name: R3
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
