@@ -72,17 +72,25 @@ node_configs:
       - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
       - cmd: ip -6 addr add fc00:12::2/64 dev net0
       - cmd: ip -6 addr add fc00:a::1/64 dev net1
       - cmd: ip -6 route add fc00:23::/64 via fc00:12::1
       - cmd: ip -6 route add fc00:b::/64 via fc00:12::1
       - cmd: ip -6 route add fc00:c::/64 via fc00:12::1
+      # SRv6 operation
+      - cmd: ip -6 r replace fc00:c::/64 encap seg6 mode encap segs fc00:b::10,fc00:b::20,fc00:23::2 dev net1
+
   - name: R1
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net2.seg6_enabled=1'
       - cmd: ip -6 addr add fc00:12::1/64 dev net0
       - cmd: ip -6 addr add fc00:23::1/64 dev net1
       - cmd: ip -6 addr add fc00:b::1/64 dev net2
@@ -94,17 +102,22 @@ node_configs:
       - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net1.seg6_enabled=1'
       - cmd: ip -6 addr add fc00:23::2/64 dev net0
       - cmd: ip -6 addr add fc00:c::1/64 dev net1
       - cmd: ip -6 route add fc00:12::/64 via fc00:12::1
       - cmd: ip -6 route add fc00:a::/64 via fc00:23::1
       - cmd: ip -6 route add fc00:b::/64 via fc00:23::1
+      # SRv6 operation
+      - cmd: ip -6 r replace fc00:a::/64 encap seg6 mode encap segs fc00:b::20,fc00:b::10,fc00:12::2 dev net1
   - name: R3
     cmds:
       - cmd: sysctl -w 'net.ipv6.conf.all.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
       - cmd: ip -6 addr add fc00:b::10/64 dev net0
       - cmd: ip -6 route add fc00:12::/64 via fc00:b::1
       - cmd: ip -6 route add fc00:23::/64 via fc00:b::1
@@ -116,6 +129,7 @@ node_configs:
       - cmd: sysctl -w 'net.ipv6.conf.default.disable_ipv6=0'
       - cmd: sysctl -w 'net.ipv6.conf.all.seg6_enabled=1'
       - cmd: sysctl -w 'net.ipv6.conf.default.seg6_enabled=1'
+      - cmd: sysctl -w 'net.ipv6.conf.net0.seg6_enabled=1'
       - cmd: ip -6 addr add fc00:b::20/64 dev net0
       - cmd: ip -6 route add fc00:12::/64 via fc00:b::1
       - cmd: ip -6 route add fc00:23::/64 via fc00:b::1
