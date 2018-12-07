@@ -8,23 +8,23 @@ preinit:
 
 nodes:
   - name: R1
-    image: cnsnode
+    image: cnsnode2
     interfaces:
     - { name: net0, type: direct, opts: R1#net0 }
     - { name: net1, type: direct, opts: R4#net0 }
   - name: R2
-    image: cnsnode
+    image: cnsnode2
     interfaces:
     - { name: net0, type: direct, opts: R1#net0 }
     - { name: net1, type: direct, opts: R3#net0 }
     - { name: net2, type: direct, opts: R4#net2 }
   - name: R3
-    image: cnsnode
+    image: cnsnode2
     interfaces:
     - { name: net0, type: direct, opts: R2#net1 }
     - { name: net1, type: direct, opts: R4#net1 }
   - name: R4
-    image: cnsnode
+    image: cnsnode2
     interfaces:
     - { name: net0, type: direct, opts: R1#net1 }
     - { name: net1, type: direct, opts: R3#net1 }
@@ -33,6 +33,7 @@ nodes:
 node_configs:
   - name: R1
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: sysctl -w net.ipv4.ip_forward=1
       - cmd: sysctl -w net.mpls.conf.lo.input=1
       - cmd: sysctl -w net.mpls.conf.net0.input=1
@@ -59,14 +60,15 @@ node_configs:
           -c ' capability opaque'
           -c ' mpls-te on'
           -c ' mpls-te router-address 10.255.0.1'
+          -c ' segment-routing on'
+          -c ' segment-routing global-block 16000 19999'
+          -c ' segment-routing node-msd 8'
+          -c ' segment-routing prefix 10.255.0.1/32 index 1001'
           -c 'exit'
-          # -c ' segment-routing on'
-          # -c ' segment-routing global-block 16000 19999'
-          # -c ' segment-routing node-msd 8'
-          # -c ' segment-routing prefix 10.255.0.1/32 index 1001'
 
   - name: R2
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: sysctl -w net.ipv4.ip_forward=1
       - cmd: sysctl -w net.mpls.conf.lo.input=1
       - cmd: sysctl -w net.mpls.conf.net0.input=1
@@ -98,14 +100,15 @@ node_configs:
           -c ' capability opaque'
           -c ' mpls-te on'
           -c ' mpls-te router-address 10.255.0.2'
+          -c ' segment-routing on'
+          -c ' segment-routing global-block 16000 19999'
+          -c ' segment-routing node-msd 8'
+          -c ' segment-routing prefix 10.255.0.2/32 index 1002'
           -c 'exit'
-          # -c ' segment-routing on'
-          # -c ' segment-routing global-block 16000 19999'
-          # -c ' segment-routing node-msd 8'
-          # -c ' segment-routing prefix 10.255.0.2/32 index 1002'
 
   - name: R3
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: sysctl -w net.ipv4.ip_forward=1
       - cmd: sysctl -w net.mpls.conf.lo.input=1
       - cmd: sysctl -w net.mpls.conf.net0.input=1
@@ -132,14 +135,15 @@ node_configs:
           -c ' capability opaque'
           -c ' mpls-te on'
           -c ' mpls-te router-address 10.255.0.3'
+          -c ' segment-routing on'
+          -c ' segment-routing global-block 16000 19999'
+          -c ' segment-routing node-msd 8'
+          -c ' segment-routing prefix 10.255.0.3/32 index 1003'
           -c 'exit'
-          # -c ' segment-routing on'
-          # -c ' segment-routing global-block 16000 19999'
-          # -c ' segment-routing node-msd 8'
-          # -c ' segment-routing prefix 10.255.0.3/32 index 1003'
 
   - name: R4
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: sysctl -w net.ipv4.ip_forward=1
       - cmd: sysctl -w net.mpls.conf.lo.input=1
       - cmd: sysctl -w net.mpls.conf.net0.input=1
@@ -171,11 +175,11 @@ node_configs:
           -c ' capability opaque'
           -c ' mpls-te on'
           -c ' mpls-te router-address 10.255.0.4'
+          -c ' segment-routing on'
+          -c ' segment-routing global-block 16000 19999'
+          -c ' segment-routing node-msd 8'
+          -c ' segment-routing prefix 10.255.0.4/32 index 1004'
           -c 'exit'
-          # -c ' segment-routing on'
-          # -c ' segment-routing global-block 16000 19999'
-          # -c ' segment-routing node-msd 8'
-          # -c ' segment-routing prefix 10.255.0.4/32 index 1004'
 
 test:
   - cmds:
@@ -203,5 +207,10 @@ test:
     # - cmd: docker exec R4 ping -c2 10.255.0.1
     # - cmd: docker exec R4 ping -c2 10.255.0.2
     # - cmd: docker exec R4 ping -c2 10.255.0.3
+    ## SR-MPLS Operation
+    - cmd: docker exec R1 ip route add 10.255.0.3/32 encap mpls 17004/17003 via 10.0.0.2
+    - cmd: docker exec R3 ip route add 10.255.0.1/32 encap mpls 17002/17001 via 10.0.0.18
+    ## SR-MPLS Test
+    - cmd: docker exec R1 ping -c2 10.255.0.3 -I 10.255.0.1
 
 
