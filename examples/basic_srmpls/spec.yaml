@@ -8,23 +8,23 @@ preinit:
 
 nodes:
   - name: R1
-    image: cnsnode2
+    image: slankdev/frr
     interfaces:
     - { name: net0, type: direct, opts: R1#net0 }
     - { name: net1, type: direct, opts: R4#net0 }
   - name: R2
-    image: cnsnode2
+    image: slankdev/frr
     interfaces:
     - { name: net0, type: direct, opts: R1#net0 }
     - { name: net1, type: direct, opts: R3#net0 }
     - { name: net2, type: direct, opts: R4#net2 }
   - name: R3
-    image: cnsnode2
+    image: slankdev/frr
     interfaces:
     - { name: net0, type: direct, opts: R2#net1 }
     - { name: net1, type: direct, opts: R4#net1 }
   - name: R4
-    image: cnsnode2
+    image: slankdev/frr
     interfaces:
     - { name: net0, type: direct, opts: R1#net1 }
     - { name: net1, type: direct, opts: R3#net1 }
