@@ -61,61 +61,65 @@ node_configs:
       - cmd: ip route replace default via 10.0.0.25
   - name: R1
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: ip addr add 10.0.0.1/30 dev net0
       - cmd: ip addr add 10.0.0.9/30 dev net1
       - cmd: ip addr add 10.0.0.17/30 dev net2
-      # - cmd: >-
-      #     vtysh -c "conf t"
-      #     -c "router ospf"
-      #     -c "network 10.0.0.0/24 area 0"
-      #     -c "network 10.1.0.0/24 area 0"
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router ospf"
+          -c " network 10.0.0.0/30 area 0"
+          -c " network 10.0.0.8/30 area 0"
+          -c " network 10.0.0.16/30 area 0"
   - name: R2
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: ip addr add 10.0.0.2/30 dev net0
       - cmd: ip addr add 10.0.0.13/30 dev net1
-      # - cmd: >-
-      #     vtysh -c "conf t"
-      #     -c "router ospf"
-      #     -c "network 10.0.0.0/24 area 0"
-      #     -c "network 10.2.0.0/24 area 0"
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router ospf"
+          -c " network 10.0.0.0/30 area 0"
+          -c " network 10.0.0.12/30 area 0"
   - name: R3
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: ip addr add 10.0.0.10/30 dev net0
       - cmd: ip addr add 10.0.0.5/30 dev net1
       - cmd: ip addr add 10.0.0.21/30 dev net2
-      # - cmd: >-
-      #     vtysh -c "conf t"
-      #     -c "router ospf"
-      #     -c "network 10.1.0.0/24 area 0"
-      #     -c "network 10.3.0.0/24 area 0"
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router ospf"
+          -c " network 10.0.0.8/30 area 0"
+          -c " network 10.0.0.4/30 area 0"
+          -c " network 10.0.0.20/30 area 0"
   - name: R4
     cmds:
+      - cmd: /usr/lib/frr/frr start
       - cmd: ip addr add 10.0.0.14/30 dev net0
       - cmd: ip addr add 10.0.0.6/30 dev net1
       - cmd: ip addr add 10.0.0.25/30 dev net2
-      # - cmd: >-
-      #     vtysh -c "conf t"
-      #     -c "router ospf"
-      #     -c "network 10.2.0.0/24 area 0"
-      #     -c "network 10.4.0.0/24 area 0"
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router ospf"
+          -c " network 10.0.0.12/30 area 0"
+          -c " network 10.0.0.4/30 area 0"
+          -c " network 10.0.0.24/30 area 0"
 
 test:
   - cmds:
+    # P2P Link test
     - cmd: docker exec S1 ping -c2 10.0.0.17
     - cmd: docker exec S3 ping -c2 10.0.0.21
     - cmd: docker exec S4 ping -c2 10.0.0.25
-
     - cmd: docker exec R1 ping -c2 10.0.0.2
     - cmd: docker exec R1 ping -c2 10.0.0.10
     - cmd: docker exec R1 ping -c2 10.0.0.18
-
     - cmd: docker exec R2 ping -c2 10.0.0.1
     - cmd: docker exec R2 ping -c2 10.0.0.14
-
     - cmd: docker exec R3 ping -c2 10.0.0.9
     - cmd: docker exec R3 ping -c2 10.0.0.6
     - cmd: docker exec R3 ping -c2 10.0.0.21
-
     - cmd: docker exec R4 ping -c2 10.0.0.13
     - cmd: docker exec R4 ping -c2 10.0.0.5
     - cmd: docker exec R4 ping -c2 10.0.0.26
