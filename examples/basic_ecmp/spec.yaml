@@ -15,24 +15,24 @@ nodes:
     interfaces:
       - { name: net0, type: bridge, opts: B0 }
       - { name: net1, type: direct, opts: S1#net0 }
+  - name: S1
+    image: tmp
+    interfaces:
+      - { name: net0, type: direct, opts: R1#net1 }
   - name: R2
     image: tmp
     interfaces:
       - { name: net0, type: bridge, opts: B0 }
       - { name: net1, type: direct, opts: S2#net0 }
+  - name: S2
+    image: tmp
+    interfaces:
+      - { name: net0, type: direct, opts: R2#net1 }
   - name: R3
     image: tmp
     interfaces:
       - { name: net0, type: bridge, opts: B0 }
       - { name: net1, type: direct, opts: S3#net0 }
-  - name: S1
-    image: tmp
-    interfaces:
-      - { name: net0, type: direct, opts: R1#net1 }
-  - name: S2
-    image: tmp
-    interfaces:
-      - { name: net0, type: direct, opts: R2#net1 }
   - name: S3
     image: tmp
     interfaces:
@@ -148,4 +148,5 @@ test:
     - cmd: docker exec R3 ping -c2 10.0.0.20
     - cmd: docker exec R3 ping -c2 10.0.0.30
     # remote link
+    - cmd: docker exec S0 ping -c2 192.168.0.2
 
