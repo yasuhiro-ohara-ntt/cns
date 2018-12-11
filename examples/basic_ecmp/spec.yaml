@@ -1,0 +1,104 @@
+# http://www.asciiflow.com
+
+nodes:
+  - name: S0
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R0#net1 }
+  - name: R0
+    image: slankdev/frr
+    interfaces:
+      - { name: net1, type: direct, opts: S0#net0 }
+      - { name: net0, type: bridge, opts: B0 }
+  - name: R1
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: bridge, opts: B0 }
+      - { name: net1, type: direct, opts: S1#net0 }
+  - name: R2
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: bridge, opts: B0 }
+      - { name: net1, type: direct, opts: S2#net0 }
+  - name: R3
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: bridge, opts: B0 }
+      - { name: net1, type: direct, opts: S3#net0 }
+  - name: S1
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R1#net1 }
+  - name: S2
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R2#net1 }
+  - name: S3
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, opts: R3#net1 }
+
+switches:
+  - name: B0
+    interfaces:
+      - { name: net0, type: container, opts: R0 }
+      - { name: net0, type: container, opts: R1 }
+      - { name: net0, type: container, opts: R2 }
+      - { name: net0, type: container, opts: R3 }
+
+node_configs:
+  - name: R0
+    cmds:
+      - cmd: ip addr add 10.0.0.1/24 dev net0
+      - cmd: ip addr add 10.1.0.1/24 dev net1
+  - name: R1
+    cmds:
+      - cmd: ip addr add 10.0.0.10/24 dev net0
+      - cmd: ip addr add 192.168.0.1/24 dev net1
+  - name: R2
+    cmds:
+      - cmd: ip addr add 10.0.0.20/24 dev net0
+      - cmd: ip addr add 192.168.0.1/24 dev net1
+  - name: R3
+    cmds:
+      - cmd: ip addr add 10.0.0.30/24 dev net0
+      - cmd: ip addr add 192.168.0.1/24 dev net1
+  - name: S0
+    cmds:
+      - cmd: ip addr add 10.1.0.2/24 dev net0
+  - name: S1
+    cmds:
+      - cmd: ip addr add 192.168.0.2/24 dev net0
+  - name: S2
+    cmds:
+      - cmd: ip addr add 192.168.0.2/24 dev net0
+  - name: S3
+    cmds:
+      - cmd: ip addr add 192.168.0.2/24 dev net0
+
+test:
+  - cmds:
+    # local link
+    - cmd: docker exec S0 ping -c2 10.1.0.1
+    - cmd: docker exec S1 ping -c2 192.168.0.1
+    - cmd: docker exec S2 ping -c2 192.168.0.1
+    - cmd: docker exec S3 ping -c2 192.168.0.1
+    - cmd: docker exec R0 ping -c2 10.1.0.2
+    - cmd: docker exec R0 ping -c2 10.0.0.10
+    - cmd: docker exec R0 ping -c2 10.0.0.20
+    - cmd: docker exec R0 ping -c2 10.0.0.30
+    - cmd: docker exec R1 ping -c2 192.168.0.2
+    - cmd: docker exec R1 ping -c2 10.0.0.1
+    - cmd: docker exec R1 ping -c2 10.0.0.10
+    - cmd: docker exec R1 ping -c2 10.0.0.20
+    - cmd: docker exec R1 ping -c2 10.0.0.30
+    - cmd: docker exec R2 ping -c2 10.0.0.1
+    - cmd: docker exec R2 ping -c2 10.0.0.10
+    - cmd: docker exec R2 ping -c2 10.0.0.20
+    - cmd: docker exec R2 ping -c2 10.0.0.30
+    - cmd: docker exec R3 ping -c2 10.0.0.1
+    - cmd: docker exec R3 ping -c2 10.0.0.10
+    - cmd: docker exec R3 ping -c2 10.0.0.20
+    - cmd: docker exec R3 ping -c2 10.0.0.30
+    # remote link
+
