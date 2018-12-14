@@ -2,8 +2,8 @@
 # CNS: Container Network Simulation tools
 
 Here we introduce the Container Network Simulation tools.
-Users can generate the script to build
-the L2 container network from YAML file.
+Users can generate,  from the YAML configuration file,
+the script to build the L2 container network.
 Quickstart guide is provided in [QUICKSTART.md](QUICKSTART.md).
 It is tested on Ubuntu 16.04 LTS and later.
 
