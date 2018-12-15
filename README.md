@@ -11,11 +11,9 @@ It is tested on Ubuntu 16.04 LTS and later.
 
 Prepare and install CNS like below.
 ```
-$ sudo apt install linux-image-extra-virtual  ##XXX: if cns will be running on VM
-$ sudo pip3 install -r requirement.txt
 $ git clone https://github.com/slankdev/cns && cd cns
-$ sudo cp bin/cns /usr/local/bin    # install pattern1
-$ export PATH=$PATH:`pwd`/bin       # install pattern2
+$ sudo pip3 install -r requirement.txt
+$ sudo cp bin/cns /usr/local/bin
 ```
 
 Usage:
@@ -27,6 +25,14 @@ $ cns init             // generate init shell-script to stdout
 $ cns fini             // generate fini shell-script to stdout
 $ cns init | sudo sh   // generate and execute init shell-script
 $ cns fini | sudo sh   // generate and execute fnit shell-script
+$ cns conf | sudo sh   // generate and execute config shell-script
+$ cns tpl              // generate template
+```
+
+Running on VM
+```
+##XXX: if cns will be running on VM
+$ sudo apt install linux-image-extra-virtual
 ```
 
 ## Author and Licence
